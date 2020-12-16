@@ -33,9 +33,20 @@ namespace Flandre_chan_tcp {
                     break;
                 }
                 case "id": {
-                    Task<User> task = new APIHandler().userProfile(sender);
+                    string username;
+
+                    string[] Split = args.Split(' ');
+                    try {
+                        username = Split[0];
+                    }
+                    catch(Exception e) {
+                        username = sender;
+                    }
+                    
+                    Task<User> task = new APIHandler().userProfile(username);
+                    string english = sender == username ? "Your" : "The";
                     task.ContinueWith((Task<User> task) => {
-                        client.SendMessage(String.Format("{0}: Your ID is {1}.", sender, task.Result.UserId), target);
+                        client.SendMessage(String.Format("{0}: {1} ID is {2}.", sender, english, task.Result.UserId), target);
                     });
                     break;
                 }
