@@ -6,7 +6,7 @@ namespace Flandre_chan_tcp {
 
 
         static void Main(string[] args) {
-            Flandre_chan bot = new Flandre_chan("Flandre-chan", "!Pikusia24", '!');
+            Flandre_chan bot = new Flandre_chan(Credentials.Username, Credentials.Password, '!');
             bot.Initialize();
             Console.ReadLine();
         }
