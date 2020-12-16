@@ -20,6 +20,7 @@ namespace Flandre_chan_tcp {
         private char Prefix;
 
         private CommandHandler commandHandler;
+        public APIHandler apiHandler;
 
         public Flandre_chan(string Username, string PlainPassword, char Prefix) : base(Username, PlainPassword, Prefix) {
             this.Username = Username;
@@ -27,6 +28,7 @@ namespace Flandre_chan_tcp {
             this.Prefix = Prefix;
 
             commandHandler = new CommandHandler(this);
+            apiHandler = new APIHandler();
         }
 
         public override void OnPrefixedMessage(string Sender, string Target, string Message) {
