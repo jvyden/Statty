@@ -268,7 +268,7 @@ namespace Flandre_chan_tcp {
         }
 
 
-        protected void SendMessage(string Message, string Target) {
+        public void SendMessage(string Message, string Target) {
             byte[] SenderName = Uleb128_WriteString(Username);
             byte[] UlebTarget = Uleb128_WriteString(Target);
             byte[] UlebMessage = Uleb128_WriteString(Message);
@@ -277,11 +277,11 @@ namespace Flandre_chan_tcp {
 
             Console.Write("IRCLog: ");
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("<Flandre-chan>: ");
+            Console.Write(String.Format("<{0}>: ", Username));
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.Write(Message + "\n");
 
-            File.AppendAllText("irclog.txt", "IRCLog: **<Flandre-chan>**: "+Message+"\n");
+            File.AppendAllText("irclog.txt", String.Format("IRCLog: **<{0}>**: {1}\n", Username, Message));
 
             using (MemoryStream ms = new MemoryStream()) {
                 using (BinaryWriter writer = new BinaryWriter(ms)) {
