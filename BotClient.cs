@@ -73,7 +73,7 @@ namespace Flandre_chan_tcp {
 
         private void Connect() {
             try {
-                client = new TcpClient("192.168.1.12", 13381);
+                client = new TcpClient("***REMOVED***", 13381);
                 //client = new TcpClient("127.0.0.1", 13381);
                 client.NoDelay = true;
 

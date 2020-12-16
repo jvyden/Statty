@@ -41,5 +41,9 @@ namespace Flandre_chan_tcp {
                 SendMessage(Sender + " rolled a " + RandomNumber.ToString() + "!", Target);
             }
         }
+
+        public override void OnMessage(string Sender, string Target, string Message) {
+            // Wow, I sure care about this here input!
+        }
     }
 }
