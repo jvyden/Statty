@@ -53,5 +53,18 @@ namespace Flandre_chan_tcp {
 
             command.ExecuteNonQuery();
         }
+
+        public void updateUser(int id, long score, long playcount, int rank) {
+            SQLiteCommand command = connection.CreateCommand();
+
+            // command.CommandText = "UPDATE players (score, playcount, rank) VALUES ($score, $playcount, $rank) WHERE id = $id;";
+            command.CommandText = "UPDATE players SET score = $score, playcount = $playcount, rank = $rank WHERE id = $id;";
+            command.Parameters.AddWithValue("$id", id);
+            command.Parameters.AddWithValue("$score", score);
+            command.Parameters.AddWithValue("$playcount", playcount);
+            command.Parameters.AddWithValue("$rank", rank);
+
+            command.ExecuteNonQuery();
+        }
     }
 }

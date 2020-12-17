@@ -71,6 +71,8 @@ namespace Flandre_chan_tcp {
                         long diffRank = user.GlobalRank - internalUser.rank;
 
                         client.SendMessage(String.Format("{0}: Score: {1} | Playcount: {2} | Rank: {3}", sender, diffScore, diffPlaycount, diffRank), target);
+
+                        dbHandler.updateUser(id, user.RankedScore, 0, (int) user.GlobalRank);
                     });
                     break;
                 }
