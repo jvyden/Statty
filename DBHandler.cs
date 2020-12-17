@@ -47,9 +47,9 @@ namespace Flandre_chan_tcp {
 
             command.CommandText = "INSERT INTO players (id, score, playcount, rank) VALUES ($id, $score, $playcount, $rank);";
             command.Parameters.AddWithValue("$id", user.UserId);
-            command.Parameters.AddWithValue("$score", user.RankedScore);
+            command.Parameters.AddWithValue("$score", 0);
             command.Parameters.AddWithValue("$playcount", 0);
-            command.Parameters.AddWithValue("$rank", user.GlobalRank);
+            command.Parameters.AddWithValue("$rank", 0);
 
             command.ExecuteNonQuery();
         }
