@@ -21,6 +21,7 @@ namespace Flandre_chan_tcp {
 
         private CommandHandler commandHandler;
         public APIHandler apiHandler;
+        public DBHandler dbHandler;
 
         public Flandre_chan(string Username, string PlainPassword, char Prefix) : base(Username, PlainPassword, Prefix) {
             this.Username = Username;
