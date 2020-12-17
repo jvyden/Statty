@@ -227,6 +227,7 @@ namespace Flandre_chan_tcp {
                         ResetReadArray(true);
                     }
                 }
+                Thread.Sleep(25);
             }
         }
 
