@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Flandre_chan_tcp {
+namespace StattyBot {
     abstract class BotClient {
         private string Sha256(string s) {
             var crypt = new System.Security.Cryptography.SHA256Managed();

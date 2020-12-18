@@ -1,4 +1,4 @@
-namespace Flandre_chan_tcp {
+namespace StattyBot {
     class InternalUser {
         public long id;
         public long score;

@@ -1,4 +1,4 @@
-namespace Flandre_chan_tcp {
+namespace StattyBot {
     class Util {
         public static string getPositive(int i) {
             if(i > 0) return "+";

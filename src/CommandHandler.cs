@@ -1,11 +1,11 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Flandre_chan_tcp {
+namespace StattyBot {
     class CommandHandler {
-        private Flandre_chan client;
+        private Statty client;
         private DBHandler dbHandler = new DBHandler();
-        public CommandHandler(Flandre_chan client) {
+        public CommandHandler(Statty client) {
             this.client = client;
         }
         public void run(string sender, string target, string cmd, string args) {

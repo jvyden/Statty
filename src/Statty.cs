@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Flandre_chan_tcp {
-    class Flandre_chan : BotClient {
+namespace StattyBot {
+    class Statty : BotClient {
         private string Sha256(string s) {
             var crypt = new System.Security.Cryptography.SHA256Managed();
             var hash = new System.Text.StringBuilder();
@@ -23,7 +23,7 @@ namespace Flandre_chan_tcp {
         public APIHandler apiHandler;
         public DBHandler dbHandler;
 
-        public Flandre_chan(string Username, string PlainPassword, char Prefix) : base(Username, PlainPassword, Prefix) {
+        public Statty(string Username, string PlainPassword, char Prefix) : base(Username, PlainPassword, Prefix) {
             this.Username = Username;
             this.Password = Sha256(PlainPassword);
             this.Prefix = Prefix;

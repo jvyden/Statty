@@ -1,4 +1,4 @@
-namespace Flandre_chan_tcp {
+namespace StattyBot {
     public partial class User {
         public string Username { get; set; }
         public long UserId { get; set; }

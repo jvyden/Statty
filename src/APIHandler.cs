@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 
 
-namespace Flandre_chan_tcp {
+namespace StattyBot {
     class APIHandler {
         private HttpClient client = new HttpClient();
         public APIHandler() {

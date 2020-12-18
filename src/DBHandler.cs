@@ -3,7 +3,7 @@ using System.Data.SQLite;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Flandre_chan_tcp {
+namespace StattyBot {
     class DBHandler {
         SQLiteConnection connection = new SQLiteConnection("Data Source=statty.db");
         APIHandler apiHandler = new APIHandler();
