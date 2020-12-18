@@ -5,9 +5,9 @@ stages:
 
 before_script:
   - "dotnet restore"
+  - "cp src/Credentials.cs.example src/Credentials.cs"
 
 build:
   stage: build
   script:
-    - "cp src/Credentials.cs.example src/Credentials.cs"
     - "dotnet build"
