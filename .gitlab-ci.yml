@@ -9,4 +9,5 @@ before_script:
 build:
   stage: build
   script:
+    - "cp src/Credentials.cs.example src/Credentials.cs"
     - "dotnet build"
