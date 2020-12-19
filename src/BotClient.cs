@@ -157,20 +157,20 @@ namespace StattyBot {
 
                         ReadBytes += stream.Read(ReadBuffer, ReadBytes, ReadBuffer.Length - ReadBytes);
 
-                        
-
                         if (ReadBytes == ReadBuffer.Length && ReadingHeader) {
                             ReadType = BitConverter.ToUInt16(ReadBuffer, 0);
                             Compression = ReadBuffer[2] == 1;
                             Length = BitConverter.ToUInt32(ReadBuffer, 3);
 
-                            //Console.WriteLine("::Bancho::R " + Length + " : " + ReadType);
+                            Console.WriteLine("Got packet (ID: {0} | Length: {1})", ReadType, Length.ToString());
 
                             ResetReadArray(false);
                             ReadBuffer = new byte[Length];
                         }
 
                         if (ReadBytes != ReadBuffer.Length) continue;
+
+                        BinaryReader reader = new BinaryReader(new MemoryStream(ReadBuffer));
 
                         switch (ReadType) {
                             case 5:
@@ -194,8 +194,6 @@ namespace StattyBot {
                                 }
                                 break;
                             case 7:
-                                BinaryReader reader = new BinaryReader(new MemoryStream(ReadBuffer));
-
                                 byte Sender_Uleb = reader.ReadByte();
                                 byte Sender_Size = reader.ReadByte();
                                 string Sender = Encoding.ASCII.GetString(reader.ReadBytes(Sender_Size));
@@ -220,8 +218,25 @@ namespace StattyBot {
                                 
 
                                 break;
-                            case 12:
-                                //Console.WriteLine("[{0}:{1}] Heartbeat request successfull!", UserID, Username);
+                            case 8:
+                                // Console.WriteLine("Received ping, sending reply");
+                                SendPong();
+                                break;
+                            case 12: //Bancho_HandleOsuUpdate?
+                                // Console.WriteLine("Heartbeat request successfull!", UserID, Username);
+                                // Console.WriteLine(System.Text.Encoding.Default.GetString(ReadBuffer));
+                                // Console.WriteLine(BitConverter.ToString(ReadBuffer).Replace("-","").ToLower());
+                                break;
+                            case 13: // User quit
+                                break;
+                            case 68: // Channel joined
+                                // Console.WriteLine(System.Text.Encoding.Default.GetString(ReadBuffer));
+                                // Console.WriteLine(BitConverter.ToString(ReadBuffer).Replace("-","").ToLower());
+                                byte unknown1 = reader.ReadByte();
+                                byte ChannelLength = reader.ReadByte();
+                                Console.WriteLine("Unknown1: " + unknown1);
+                                string Channel = Encoding.ASCII.GetString(reader.ReadBytes(ChannelLength));
+                                Console.WriteLine("Autojoining " + Channel);
                                 break;
                         }
                         ResetReadArray(true);
@@ -320,6 +335,17 @@ namespace StattyBot {
                         writer.Write(UlebMapChecksum);
                         writer.Write(0); // Current Mods
                     }
+                }
+                QueueRequest(ms.ToArray());
+            }
+        }
+
+        private void SendPong() {
+            using (MemoryStream ms = new MemoryStream()) {
+                using (BinaryWriter writer = new BinaryWriter(ms)) {
+                    writer.Write((short)4);
+                    writer.Write((byte)0);
+                    writer.Write(0);
                 }
                 QueueRequest(ms.ToArray());
             }
