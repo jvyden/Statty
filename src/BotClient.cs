@@ -33,8 +33,8 @@ namespace StattyBot {
 
         private char Prefix;
 
-        private bool Connected;
-        private bool Authenticated;
+        public bool Connected;
+        public bool Authenticated;
 
         private long LastPingTime;
 
@@ -58,7 +58,7 @@ namespace StattyBot {
                 foreach(byte[] Request in RequestQueue.GetConsumingEnumerable()) {
                     try {
                         this.stream.Write(Request, 0, Request.Length);
-                    }catch {
+                    } catch {
                         Console.WriteLine("Queued Request Failed to send.");
                     }
                 }
@@ -270,7 +270,7 @@ namespace StattyBot {
 
 
         public void SendMessage(string Message, string Target) {
-            byte[] SenderName = Uleb128_WriteString(Username);
+            byte[] UlebSenderName = Uleb128_WriteString(Username);
             byte[] UlebTarget = Uleb128_WriteString(Target);
             byte[] UlebMessage = Uleb128_WriteString(Message);
 
@@ -288,16 +288,45 @@ namespace StattyBot {
                 using (BinaryWriter writer = new BinaryWriter(ms)) {
                     writer.Write((short)1);
                     writer.Write((byte)0);
-                    writer.Write(SenderName.Length + UlebTarget.Length + UlebMessage.Length);
+                    writer.Write(UlebSenderName.Length + UlebTarget.Length + UlebMessage.Length);
 
                     writer.Write((byte)0);
                     writer.Write(UlebMessage);
                     writer.Write(UlebTarget);
-                    writer.Write(SenderName);
+                    writer.Write(UlebSenderName);
                 }
 
                 QueueRequest(ms.ToArray());
             }
+        }
+
+        public void SendStatus(StatusList Status, bool UpdateBeatmap = true, string Text = "") {
+            byte[] UlebText = Uleb128_WriteString(Text);
+            byte[] UlebMapChecksum = Uleb128_WriteString("");
+            using (MemoryStream ms = new MemoryStream()) {
+                using (BinaryWriter writer = new BinaryWriter(ms)) {
+                    // Packet header
+                    writer.Write((short)0);
+                    writer.Write((byte)0);
+                    writer.Write(2 + UlebText.Length + UlebMapChecksum.Length);
+                    // 2: StatusList byte & updateBeatmap bool
+
+                    // Actual data
+                    writer.Write((byte) Status); // StatusList elements are ints, cast to single byte
+                    writer.Write(UpdateBeatmap); // 0x00 for false, 0x01 for true;
+
+                    if(UpdateBeatmap) {
+                        writer.Write(UlebText);
+                        writer.Write(UlebMapChecksum);
+                        writer.Write(0); // Current Mods
+                    }
+                }
+                QueueRequest(ms.ToArray());
+            }
+        }
+
+        public void SendStatus(Status status) {
+            SendStatus(status.StatusType, status.UpdateBeatmap, status.StatusText);
         }
 
         public abstract void OnPrefixedMessage(string Sender, string Target, string Message);

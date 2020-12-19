@@ -9,9 +9,6 @@ namespace StattyBot {
             this.client = client;
         }
         public void run(string sender, string target, string cmd, string args) {
-            // Console.WriteLine(cmd);
-            // Console.WriteLine(args);
-
             switch(cmd) {
                 case "help": {
                     client.SendMessage("Hi! I'm a Tillerino clone designed to help you track your stats easier.", target);
@@ -29,9 +26,7 @@ namespace StattyBot {
                         max = int.Parse(Split[0]);
                         //Console.WriteLine("max: {0}", max);
                     }
-                    catch (Exception e) {
-                        //Console.WriteLine("Failed: {0}", Split[1]);
-                    }
+                    catch {}
 
                     int RandomNumber = new Random().Next(0, max);
                     client.SendMessage(sender + " rolled a " + RandomNumber.ToString() + "!", target);
@@ -79,6 +74,23 @@ namespace StattyBot {
 
                         dbHandler.updateUser(id, user.RankedScore, 0, (int) user.GlobalRank);
                     });
+                    break;
+                }
+                case "status": {
+                    int id = 1;
+
+                    string[] Split = args.Split(' ');
+                    try {
+                        id = int.Parse(Split[0]);
+                    }
+                    catch {}
+
+                    if(id < 0 || id > 12) {
+                        client.SendMessage("Out of range (0-12)", target);
+                        break;
+                    }
+
+                    client.SendStatus((StatusList) id);
                     break;
                 }
             }
