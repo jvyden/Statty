@@ -53,7 +53,7 @@ namespace StattyBot {
                 while (true) {
                     if(this.Authenticated) {
                         this.SendStatus(Statuses[new Random().Next(0, Statuses.Count)]);
-                        Thread.Sleep((10 * 1000) - 25);
+                        Thread.Sleep((30 * 1000) - 25);
                         // Overengineering (or over-engineering, or over-kill) is the act of designing a product to 
                         // be more robust or have more features than often necessary for its intended use,
                         // or for a process to be unnecessarily complex or inefficient. 
