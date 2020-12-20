@@ -220,8 +220,8 @@ namespace StattyBot {
                                 break;
                             case 12: //Bancho_HandleOsuUpdate?
                                 #if DEBUG
-                                Console.WriteLine(System.Text.Encoding.Default.GetString(ReadBuffer));
-                                Console.WriteLine(BitConverter.ToString(ReadBuffer).Replace("-","").ToLower());
+                                // Console.WriteLine(System.Text.Encoding.Default.GetString(ReadBuffer));
+                                // Console.WriteLine(BitConverter.ToString(ReadBuffer).Replace("-","").ToLower());
                                 #endif
                                 break;
                             case 13: // User quit
