@@ -2,6 +2,8 @@ obj/
 bin/
 Flandre-chan-tcp.7z
 .vscode
+
+# StattyBot specific
 irclog.txt
-Credentials.cs
 statty.db
+.env
