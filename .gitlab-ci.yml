@@ -7,7 +7,18 @@ before_script:
   - "dotnet restore"
   - "cp src/Credentials.cs.example src/Credentials.cs"
 
-build:
+buildDebug:
   stage: build
   script:
     - "dotnet build"
+  artifacts:
+    paths:
+      - bin/Debug
+
+buildRelease:
+  stage: build
+  script:
+    - "dotnet build --configuration Release"
+  artifacts:
+    paths:
+      - bin/Release
