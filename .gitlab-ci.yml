@@ -2,6 +2,13 @@ image: mcr.microsoft.com/dotnet/sdk:3.1
 
 stages:
   - build
+  - deploy
+
+cache:
+  key: "$CI_COMMIT_REF_NAME"
+  paths:
+    - obj
+    - bin
 
 before_script:
   - "dotnet restore"
@@ -22,13 +29,24 @@ buildDebug:
 
 buildRelease:
   stage: build
+  retry: 1
   script:
     - "dotnet build --configuration Release"
   artifacts:
     paths:
       - bin/Release
-  cache:
-    key: "$CI_COMMIT_REF_NAME"
-    paths:
-      - obj
-      - bin
+
+deploy:
+  image: alpine
+  stage: deploy
+  when: manual
+  before_script:
+    - apk add openssh
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PROD_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+  script:
+    - scp -o StrictHostKeyChecking=no -r bin/Release statty@jvyden-xyz:~/Statty
+  environment:
+    name: production
