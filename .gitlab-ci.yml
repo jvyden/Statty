@@ -46,3 +46,4 @@ deploy:
     - ssh -o StrictHostKeyChecking=no statty@jvyden.xyz ./finish-deploy.sh
   environment:
     name: production
+  cache:
