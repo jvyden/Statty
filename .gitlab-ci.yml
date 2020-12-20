@@ -31,12 +31,11 @@ buildRelease:
       - bin/Release
 
 deploy:
-  image: alpine
+  image: kroniak/ssh-client
   stage: deploy
   when: manual
   dependencies: ["buildRelease"]
   before_script:
-    - apk add openssh
     - eval $(ssh-agent -s)
     - echo "$SSH_PROD_KEY" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
