@@ -206,16 +206,10 @@ namespace StattyBot {
                                 byte Target_Size = reader.ReadByte();
                                 string Target = Encoding.ASCII.GetString(reader.ReadBytes(Target_Size));
 
-                                Console.WriteLine("IRCLog: [{0}] <{1}>: {2}", Target, Sender, Message);
-
-                                File.AppendAllText("irclog.txt",String.Format("IRCLog: [{0}] <{1}>: {2}\n", Target, Sender, Message));
-
-                                if(Message[0] == Prefix) {
+                                if(Message[0] == Prefix)
                                     OnPrefixedMessage(Sender, Target, Message);
-                                }else {
-                                    OnMessage(Sender, Target, Message);
-                                }
-                                
+
+                                OnMessage(Sender, Target, Message);
 
                                 break;
                             case 8:
@@ -358,7 +352,10 @@ namespace StattyBot {
             SendStatus(status.StatusType, status.UpdateBeatmap, status.StatusText);
         }
 
-        public abstract void OnPrefixedMessage(string Sender, string Target, string Message);
-        public abstract void OnMessage(string Sender, string Target, string Message);
+        public virtual void OnPrefixedMessage(string Sender, string Target, string Message) { }
+        public virtual void OnMessage(string Sender, string Target, string Message) {
+            Console.WriteLine("IRCLog: [{0}] <{1}>: {2}", Target, Sender, Message);
+            File.AppendAllText("irclog.txt",String.Format("IRCLog: [{0}] <{1}>: {2}\n", Target, Sender, Message));
+        }
     }
 }
