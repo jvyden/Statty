@@ -4,9 +4,9 @@ stages:
   - build
   - deploy
 
-  cache:
-    key: "$CI_COMMIT_REF_NAME"
-    paths:
+cache:
+  key: "$CI_COMMIT_REF_NAME"
+  paths:
     - obj
 
 before_script:
