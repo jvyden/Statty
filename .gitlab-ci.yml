@@ -11,7 +11,6 @@ cache:
 
 before_script:
   - "dotnet restore"
-  - "cp src/Credentials.cs.example src/Credentials.cs"
 
 buildDebug:
   stage: build
