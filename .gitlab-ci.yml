@@ -8,7 +8,6 @@ cache:
   key: "$CI_COMMIT_REF_NAME"
   paths:
     - obj
-    - bin
 
 before_script:
   - "dotnet restore"
@@ -26,6 +25,7 @@ buildDebug:
     paths:
       - obj
       - bin
+    expire_in: 3 days
 
 buildRelease:
   stage: build
@@ -40,6 +40,7 @@ deploy:
   image: alpine
   stage: deploy
   when: manual
+  dependencies: buildRelease
   before_script:
     - apk add openssh
     - eval $(ssh-agent -s)
@@ -47,6 +48,6 @@ deploy:
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
   script:
-    - scp -o StrictHostKeyChecking=no -r bin/Release statty@jvyden-xyz:~/Statty
+    - scp -o StrictHostKeyChecking=no -r bin/Release statty@jvyden.xyz:~/Statty
   environment:
     name: production
