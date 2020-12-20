@@ -39,7 +39,7 @@ namespace StattyBot {
                     try {
                         username = Split[0];
                     }
-                    catch(Exception e) {
+                    catch {
                         username = sender;
                     }
                     
