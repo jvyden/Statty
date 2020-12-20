@@ -42,8 +42,8 @@ deploy:
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
   script:
-    - ssh -o StrictHostKeyChecking=no ./init-deploy.sh
+    - ssh -o StrictHostKeyChecking=no statty@jvyden.xyz ./init-deploy.sh
     - scp -o StrictHostKeyChecking=no -r bin/Release statty@jvyden.xyz:~/Statty
-    - ssh -o StrictHostKeyChecking=no ./finish-deploy.sh
+    - ssh -o StrictHostKeyChecking=no statty@jvyden.xyz ./finish-deploy.sh
   environment:
     name: production
