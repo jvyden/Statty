@@ -4,9 +4,9 @@ stages:
   - build
   - deploy
 
-cache:
-  key: "$CI_COMMIT_REF_NAME"
-  paths:
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    paths:
     - obj
 
 before_script:
@@ -20,11 +20,6 @@ buildDebug:
   artifacts:
     paths:
       - bin/Debug
-  cache:
-    key: "$CI_COMMIT_REF_NAME"
-    paths:
-      - obj
-      - bin
     expire_in: 3 days
 
 buildRelease:
