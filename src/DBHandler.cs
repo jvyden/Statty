@@ -47,7 +47,7 @@ namespace StattyBot {
 
             command.CommandText = "INSERT INTO players (id, score, playcount, rank) VALUES ($id, $score, $playcount, $rank);";
             command.Parameters.AddWithValue("$id", user.UserId);
-            command.Parameters.AddWithValue("$score", 0);
+            command.Parameters.AddWithValue("$score", 0); // Defaults are zero as to not confuse the user
             command.Parameters.AddWithValue("$playcount", 0);
             command.Parameters.AddWithValue("$rank", 0);
 
@@ -57,7 +57,6 @@ namespace StattyBot {
         public void updateUser(int id, long score, long playcount, int rank) {
             SQLiteCommand command = connection.CreateCommand();
 
-            // command.CommandText = "UPDATE players (score, playcount, rank) VALUES ($score, $playcount, $rank) WHERE id = $id;";
             command.CommandText = "UPDATE players SET score = $score, playcount = $playcount, rank = $rank WHERE id = $id;";
             command.Parameters.AddWithValue("$id", id);
             command.Parameters.AddWithValue("$score", score);

@@ -74,7 +74,6 @@ namespace StattyBot {
         private void Connect() {
             try {
                 client = new TcpClient("***REMOVED***", 13381);
-                //client = new TcpClient("127.0.0.1", 13381);
                 client.NoDelay = true;
 
                 stream = client.GetStream();
@@ -162,7 +161,9 @@ namespace StattyBot {
                             Compression = ReadBuffer[2] == 1;
                             Length = BitConverter.ToUInt32(ReadBuffer, 3);
 
+                            #if DEBUG
                             Console.WriteLine("Got packet (ID: {0} | Length: {1})", ReadType, Length.ToString());
+                            #endif
 
                             ResetReadArray(false);
                             ReadBuffer = new byte[Length];
@@ -218,22 +219,25 @@ namespace StattyBot {
 
                                 break;
                             case 8:
-                                // Console.WriteLine("Received ping, sending reply");
+                                #if DEBUG
+                                Console.WriteLine("Received ping, sending reply");
+                                #endif
                                 SendPong();
                                 break;
                             case 12: //Bancho_HandleOsuUpdate?
-                                // Console.WriteLine("Heartbeat request successfull!", UserID, Username);
-                                // Console.WriteLine(System.Text.Encoding.Default.GetString(ReadBuffer));
-                                // Console.WriteLine(BitConverter.ToString(ReadBuffer).Replace("-","").ToLower());
+                                #if DEBUG
+                                Console.WriteLine(System.Text.Encoding.Default.GetString(ReadBuffer));
+                                Console.WriteLine(BitConverter.ToString(ReadBuffer).Replace("-","").ToLower());
+                                #endif
                                 break;
                             case 13: // User quit
                                 break;
                             case 68: // Channel joined
-                                // Console.WriteLine(System.Text.Encoding.Default.GetString(ReadBuffer));
-                                // Console.WriteLine(BitConverter.ToString(ReadBuffer).Replace("-","").ToLower());
                                 byte unknown1 = reader.ReadByte();
                                 byte ChannelLength = reader.ReadByte();
+                                #if DEBUG
                                 Console.WriteLine("Unknown1: " + unknown1);
+                                #endif
                                 string Channel = Encoding.ASCII.GetString(reader.ReadBytes(ChannelLength));
                                 Console.WriteLine("Autojoining " + Channel);
                                 break;
