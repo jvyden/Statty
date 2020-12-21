@@ -77,7 +77,7 @@ namespace StattyBot {
                 #if FLAN2
                     port = 13382;
                 #endif
-                client = new TcpClient("***REMOVED***", 13381);
+                client = new TcpClient("***REMOVED***", port);
                 client.NoDelay = true;
 
                 stream = client.GetStream();
@@ -93,7 +93,11 @@ namespace StattyBot {
                 writer.Flush();
                 writer.WriteLine(this.Password);
                 writer.Flush();
-                writer.WriteLine("BOT|" + TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now).Hours + "|0");
+                #if FLAN2
+                    writer.WriteLine("1400|" + TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now).Hours + "|0");
+                #else
+                    writer.WriteLine("BOT|" + TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now).Hours + "|0");
+                #endif
                 writer.Flush();
 
                 LastPingTime = flandrecho_common.Shortcuts.GetUnixTime.Now();
