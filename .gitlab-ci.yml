@@ -75,7 +75,7 @@ deployStaging:
     - chmod 700 ~/.ssh
   script:
     - ssh -o StrictHostKeyChecking=no statty-staging@jvyden.xyz ./init-deploy.sh
-    - scp -o StrictHostKeyChecking=no -r bin/Release statty-staging@jvyden.xyz:~/Statty
+    - scp -o StrictHostKeyChecking=no -r bin/Staging statty-staging@jvyden.xyz:~/Statty
     - ssh -o StrictHostKeyChecking=no statty-staging@jvyden.xyz ./finish-deploy.sh
   environment:
     name: staging
