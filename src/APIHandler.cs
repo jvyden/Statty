@@ -31,6 +31,9 @@ namespace StattyBot {
         }
 
         public async Task<User> userProfile(string username) {
+            #if DEBUG
+            Console.WriteLine("Attempting to find ID of " + username);
+            #endif
             return await Task.Run(async () => {
                 var request = new HttpRequestMessage {
                     RequestUri = new Uri(client.BaseAddress + "userProfile"),
@@ -40,7 +43,10 @@ namespace StattyBot {
 
                 HttpResponseMessage response = (await client.SendAsync(request));
                 string content = await response.Content.ReadAsStringAsync();
+                
+                #if DEBUG
                 Console.WriteLine(content);
+                #endif
 
                 return JsonConvert.DeserializeObject<User>(content);
             });

@@ -15,7 +15,7 @@ namespace StattyBot {
                     System.Threading.Thread.Sleep(100);
                     client.SendMessage("Please bear in mind this is in very early stages, and may be buggy. Please send bug reports to jvy#3348 on discord.", target);
                     System.Threading.Thread.Sleep(100);
-                    client.SendMessage("Commands: $help, $roll, $update", target);
+                    client.SendMessage("Commands: $help, $roll, $update, $profile", target);
                     break;
                 }
                 case "roll": {
@@ -23,8 +23,8 @@ namespace StattyBot {
 
                     string[] Split = args.Split(' ');
                     try {
-                        max = int.Parse(Split[0]);
-                        //Console.WriteLine("max: {0}", max);
+                        if(Split[1] != "") max = int.Parse(Split[1]);
+                        else throw new Exception();
                     }
                     catch {}
 
@@ -37,7 +37,8 @@ namespace StattyBot {
 
                     string[] Split = args.Split(' ');
                     try {
-                        username = Split[0];
+                        if(Split[1] != "") username = Split[1];
+                        else throw new Exception();
                     }
                     catch {
                         username = sender;
@@ -76,6 +77,7 @@ namespace StattyBot {
                     });
                     break;
                 }
+                #if DEBUG
                 case "status": {
                     int id = 1;
 
@@ -91,6 +93,27 @@ namespace StattyBot {
                     }
 
                     client.SendStatus((StatusList) id);
+                    break;
+                }
+                #endif
+                case "p":
+                case "profile": {
+                    string username;
+                    string[] Split = args.Split(' ');
+                    try {
+                        if(Split[1] != "") username = Split[1];
+                        else throw new Exception();
+                    } catch {
+                        username = sender; 
+                    }
+
+                    string english = sender == username ? "Your" : "Their";
+
+                    Task<User> task = new APIHandler().userProfile(username);
+                    task.ContinueWith((Task<User> task) => {
+                        int id = (int) task.Result.UserId;
+                        client.SendMessage(String.Format("{0}: {1} profile is at http://oldsu.ayyeve.xyz/user?u={2}", sender, english, id), target);
+                    });
                     break;
                 }
             }
