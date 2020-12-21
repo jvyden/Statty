@@ -27,7 +27,7 @@ buildStaging:
     - "dotnet build --configuration Staging"
   artifacts:
     paths:
-      - bin/Release
+      - bin/Staging
     expire_in: 2 weeks
 
 
