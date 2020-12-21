@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Threading;
 
 namespace StattyBot {
-    class Statty : BotClient {
+    public class Statty : BotClient {
         private string Sha256(string s) {
             var crypt = new System.Security.Cryptography.SHA256Managed();
             var hash = new System.Text.StringBuilder();
@@ -70,7 +70,7 @@ namespace StattyBot {
                 Args = " " + String.Join(" ", Split.GetRange(1, Split.Count - 1)); // this is FUCKED
             } catch {}
             
-            commandHandler.run(Sender, Target, Split[0], Args);
+            commandHandler.HandleCommand(Sender, Target, Split[0], Args);
         }
 
         public override void OnMessage(string Sender, string Target, string Message) {

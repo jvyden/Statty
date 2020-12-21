@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 
 namespace StattyBot {
-    class APIHandler {
+    public class APIHandler {
         private HttpClient client = new HttpClient();
         public APIHandler() {
             client.BaseAddress = new Uri("https://oldsu.ayyeve.xyz/api/");

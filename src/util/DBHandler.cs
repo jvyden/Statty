@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace StattyBot {
-    class DBHandler {
+    public class DBHandler {
         SQLiteConnection connection = new SQLiteConnection("Data Source=statty.db");
         APIHandler apiHandler = new APIHandler();
         public DBHandler() {

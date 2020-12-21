@@ -1,5 +1,5 @@
 namespace StattyBot {
-    enum StatusList {
+    public enum StatusList {
         IDLE = 0,
         AFK = 1,
         PLAYING = 2,

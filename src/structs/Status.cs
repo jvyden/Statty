@@ -1,5 +1,5 @@
 namespace StattyBot {
-    class Status {
+    public class Status {
         public StatusList StatusType;
         public bool UpdateBeatmap;
         public string StatusText;

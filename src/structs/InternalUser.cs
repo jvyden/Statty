@@ -1,5 +1,5 @@
 namespace StattyBot {
-    class InternalUser {
+    public class InternalUser {
         public long id;
         public long score;
         public long playcount;

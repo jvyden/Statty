@@ -1,119 +1,43 @@
 using System;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace StattyBot {
     class CommandHandler {
         private Statty client;
-        private DBHandler dbHandler = new DBHandler();
+        private List<Command> commandList = new List<Command>{};
+
         public CommandHandler(Statty client) {
             this.client = client;
+
+            commandList.Add(new HelpCommand());
+            commandList.Add(new RollCommand());
+            commandList.Add(new IDCommand());
+            commandList.Add(new ProfileCommand());
+            
+            #if DEBUG
+                commandList.Add(new StatusCommand());
+            #endif
         }
-        public void run(string sender, string target, string cmd, string args) {
+
+        public Command FindCommandByInput(string input) {
+            foreach (Command command in commandList) {
+                if(String.Equals(command.Name, input, StringComparison.CurrentCultureIgnoreCase)) return command;
+                if(command.Aliases.Contains(input.ToLower())) return command;
+            }
+            return null;
+        }
+
+        public void HandleCommand(string sender, string target, string cmd, string args) {
+            string[] Split = args.Split(' ');
+            Command command = FindCommandByInput(cmd);
+            command?.Run(client, sender, target, Split);
+            
             switch(cmd) {
-                case "help": {
-                    client.SendMessage("Hi! I'm a Tillerino clone designed to help you track your stats easier.", target);
-                    System.Threading.Thread.Sleep(100);
-                    client.SendMessage("Please bear in mind this is in very early stages, and may be buggy. Please send bug reports to jvy#3348 on discord.", target);
-                    System.Threading.Thread.Sleep(100);
-                    client.SendMessage("Commands: $help, $roll, $update, $profile", target);
-                    break;
-                }
-                case "roll": {
-                    int max = 100;
-
-                    string[] Split = args.Split(' ');
-                    try {
-                        if(Split[1] != "") max = int.Parse(Split[1]);
-                        else throw new Exception();
-                    }
-                    catch {}
-
-                    int RandomNumber = new Random().Next(0, max);
-                    client.SendMessage(sender + " rolled a " + RandomNumber.ToString() + "!", target);
-                    break;
-                }
-                case "id": {
-                    string username;
-
-                    string[] Split = args.Split(' ');
-                    try {
-                        if(Split[1] != "") username = Split[1];
-                        else throw new Exception();
-                    }
-                    catch {
-                        username = sender;
-                    }
-                    
-                    Task<User> task = new APIHandler().userProfile(username);
-                    string english = sender == username ? "Your" : "The";
-                    task.ContinueWith((Task<User> task) => {
-                        client.SendMessage(String.Format("{0}: {1} ID is {2}.", sender, english, task.Result.UserId), target);
-                    });
-                    break;
-                }
-                case "u":
-                case "update": {
-                    Task<User> task = new APIHandler().userProfile(sender);
-                    task.ContinueWith((Task<User> task) => {
-                        int id = (int) task.Result.UserId;
-                        User user = task.Result;
-
-                        if(!dbHandler.doesUserExist(id)) {
-                            client.SendMessage(sender + ": One moment, I'm adding you to my database.", target);
-                            dbHandler.addUser(id);
-                        }
-
-                        InternalUser internalUser = dbHandler.getInternalUser(id);
-                        long diffScore = user.RankedScore - internalUser.score;
-                        long diffPlaycount = 0;
-                        long diffRank = user.GlobalRank - internalUser.rank;
-
-                        client.SendMessage(
-                            String.Format("{0}: Score: {1} | Playcount: {2} | Rank: {3}", 
-                                sender, Util.getPositiveStr(diffScore), Util.getPositiveStr(diffPlaycount), Util.getPositiveStr(-diffRank)
-                            ), target);
-
-                        dbHandler.updateUser(id, user.RankedScore, 0, (int) user.GlobalRank);
-                    });
-                    break;
-                }
-                #if DEBUG
-                case "status": {
-                    int id = 1;
-
-                    string[] Split = args.Split(' ');
-                    try {
-                        id = int.Parse(Split[0]);
-                    }
-                    catch {}
-
-                    if(id < 0 || id > 12) {
-                        client.SendMessage("Out of range (0-12)", target);
-                        break;
-                    }
-
-                    client.SendStatus((StatusList) id);
-                    break;
-                }
-                #endif
                 case "p":
                 case "profile": {
-                    string username;
-                    string[] Split = args.Split(' ');
-                    try {
-                        if(Split[1] != "") username = Split[1];
-                        else throw new Exception();
-                    } catch {
-                        username = sender; 
-                    }
 
-                    string english = sender == username ? "Your" : "Their";
-
-                    Task<User> task = new APIHandler().userProfile(username);
-                    task.ContinueWith((Task<User> task) => {
-                        int id = (int) task.Result.UserId;
-                        client.SendMessage(String.Format("{0}: {1} profile is at http://oldsu.ayyeve.xyz/user?u={2}", sender, english, id), target);
-                    });
                     break;
                 }
             }

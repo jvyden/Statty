@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace StattyBot {
-    abstract class BotClient {
+    public abstract class BotClient {
         private string Sha256(string s) {
             var crypt = new System.Security.Cryptography.SHA256Managed();
             var hash = new System.Text.StringBuilder();
