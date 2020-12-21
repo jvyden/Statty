@@ -24,7 +24,7 @@ buildDebug:
 buildStaging:
   stage: build
   script:
-    - "dotnet build --configuration Release -define:FLAN2"
+    - "dotnet build --configuration Staging"
   artifacts:
     paths:
       - bin/Release

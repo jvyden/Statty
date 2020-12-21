@@ -5,16 +5,18 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>StattyBot</RootNamespace>
   </PropertyGroup>
-
-  <!-- <ItemGroup>
-    <ProjectReference Include="..\flandrecho-common\flandrecho-common.csproj" />
-  </ItemGroup> -->
-
+  
   <ItemGroup>
     <PackageReference Include="dotenv.net" Version="2.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="System.Data.SQLite" Version="1.0.113.6" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.6" />
   </ItemGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Staging'">
+    <ConfigurationGroup>Release</ConfigurationGroup>
+    <DefineConstants>RELEASE;TRACE;FLAN2</DefineConstants>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
 
 </Project>
