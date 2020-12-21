@@ -2,9 +2,9 @@ obj/
 bin/
 Flandre-chan-tcp.7z
 .vscode
+.idea
 
 # StattyBot specific
 irclog.txt
 statty.db
 .env
-.idea
