@@ -73,6 +73,10 @@ namespace StattyBot {
 
         private void Connect() {
             try {
+                int port = 13381;
+                #if FLAN2
+                    port = 13382;
+                #endif
                 client = new TcpClient("***REMOVED***", 13381);
                 client.NoDelay = true;
 

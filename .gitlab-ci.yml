@@ -20,6 +20,16 @@ buildDebug:
     paths:
       - bin/Debug
     expire_in: 3 days
+    
+buildStaging:
+  stage: build
+  script:
+    - "dotnet build --configuration Release -define:FLAN2"
+  artifacts:
+    paths:
+      - bin/Release
+    expire_in: 2 weeks
+
 
 buildRelease:
   stage: build
@@ -30,10 +40,13 @@ buildRelease:
     paths:
       - bin/Release
 
-deploy:
+deployProduction:
   image: kroniak/ssh-client
   stage: deploy
   when: manual
+  only:
+    refs:
+      - master
   dependencies: ["buildRelease"]
   before_script:
     - eval $(ssh-agent -s)
@@ -47,3 +60,24 @@ deploy:
   environment:
     name: production
   cache:
+    
+deployStaging:
+  image: kroniak/ssh-client
+  stage: deploy
+  only:
+    refs:
+      - master
+  dependencies: ["buildStaging"]
+  before_script:
+    - eval $(ssh-agent -s)
+    - echo "$SSH_STAGING_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+  script:
+    - ssh -o StrictHostKeyChecking=no statty-staging@jvyden.xyz ./init-deploy.sh
+    - scp -o StrictHostKeyChecking=no -r bin/Release statty-staging@jvyden.xyz:~/Statty
+    - ssh -o StrictHostKeyChecking=no statty-staging@jvyden.xyz ./finish-deploy.sh
+  environment:
+    name: staging
+  cache:
+    
