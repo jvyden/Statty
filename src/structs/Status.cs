@@ -1,4 +1,4 @@
-namespace StattyBot {
+namespace StattyBot.structs {
     public class Status {
         public StatusList StatusType;
         public bool UpdateBeatmap;

@@ -7,6 +7,8 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using StattyBot.structs;
+using StattyBot.util;
 
 namespace StattyBot {
     public abstract class BotClient {
@@ -44,7 +46,7 @@ namespace StattyBot {
         private int ReadBytes;
         private bool ReadingHeader = true;
 
-        private int UserID = -1;
+        private int UserId = -1;
 
         private BlockingCollection<byte[]> RequestQueue = new BlockingCollection<byte[]>();
 
@@ -55,9 +57,9 @@ namespace StattyBot {
             this.Prefix = Prefix;
 
             Task.Factory.StartNew(() => {
-                foreach(byte[] Request in RequestQueue.GetConsumingEnumerable()) {
+                foreach(byte[] request in RequestQueue.GetConsumingEnumerable()) {
                     try {
-                        this.stream.Write(Request, 0, Request.Length);
+                        this.stream.Write(request, 0, request.Length);
                     } catch {
                         Console.WriteLine("Queued Request Failed to send.");
                     }
@@ -100,7 +102,7 @@ namespace StattyBot {
                 #endif
                 writer.Flush();
 
-                LastPingTime = flandrecho_common.Shortcuts.GetUnixTime.Now();
+                LastPingTime = GetUnixTime.Now();
             }
             catch {
                 Console.WriteLine("[*.*] Connection to Flandrecho Failed!");
@@ -109,7 +111,7 @@ namespace StattyBot {
         }
 
         private void FailConnection(int SecondsRetry) {
-            LastPingTime = flandrecho_common.Shortcuts.GetUnixTime.Now();
+            LastPingTime = GetUnixTime.Now();
             PingTimeout = SecondsRetry;
 
             Disconnect(false);
@@ -146,7 +148,7 @@ namespace StattyBot {
             Connect();
 
             while (true) {
-                if(flandrecho_common.Shortcuts.GetUnixTime.Now() - LastPingTime > PingTimeout) {
+                if(GetUnixTime.Now() - LastPingTime > PingTimeout) {
                     Connect();
                     Thread.Sleep(20);
                     continue;
@@ -154,37 +156,37 @@ namespace StattyBot {
 
                 if (client != null && client.Connected) {
 
-                    ushort ReadType = 0;
-                    bool Compression;
-                    uint Length;
+                    ushort readType = 0;
+                    bool compression;
+                    uint length;
 
                     while (Connected && stream != null && stream.DataAvailable) {
 
-                        LastPingTime = flandrecho_common.Shortcuts.GetUnixTime.Now();
+                        LastPingTime = GetUnixTime.Now();
 
                         ReadBytes += stream.Read(ReadBuffer, ReadBytes, ReadBuffer.Length - ReadBytes);
 
                         if (ReadBytes == ReadBuffer.Length && ReadingHeader) {
-                            ReadType = BitConverter.ToUInt16(ReadBuffer, 0);
-                            Compression = ReadBuffer[2] == 1;
-                            Length = BitConverter.ToUInt32(ReadBuffer, 3);
+                            readType = BitConverter.ToUInt16(ReadBuffer, 0);
+                            compression = ReadBuffer[2] == 1;
+                            length = BitConverter.ToUInt32(ReadBuffer, 3);
 
                             #if DEBUG
-                            Console.WriteLine("Got packet (ID: {0} | Length: {1})", ReadType, Length.ToString());
+                            Console.WriteLine("Got packet (ID: {0} | Length: {1})", readType, length.ToString());
                             #endif
 
                             ResetReadArray(false);
-                            ReadBuffer = new byte[Length];
+                            ReadBuffer = new byte[length];
                         }
 
                         if (ReadBytes != ReadBuffer.Length) continue;
 
                         BinaryReader reader = new BinaryReader(new MemoryStream(ReadBuffer));
 
-                        switch (ReadType) {
+                        switch (readType) {
                             case 5:
-                                UserID = new BinaryReader(new MemoryStream(ReadBuffer)).ReadInt32();
-                                switch (UserID) {
+                                UserId = new BinaryReader(new MemoryStream(ReadBuffer)).ReadInt32();
+                                switch (UserId) {
                                     case -1:
                                         Console.WriteLine("[*.*] Authentication Failed! Invalid Login!");
                                         Thread.Sleep(2500);
@@ -193,31 +195,31 @@ namespace StattyBot {
                                         Console.WriteLine("[*.*] Your bot has been banned!");
                                         break;
                                     default:
-                                        Console.WriteLine("[{0}:{1}] Bot Authenticated and running!", UserID, Username);
+                                        Console.WriteLine("[{0}:{1}] Bot Authenticated and running!", UserId, Username);
                                         Authenticated = true;
-                                        ReadType = 0;
-                                        Compression = false;
-                                        Length = 0;
+                                        readType = 0;
+                                        compression = false;
+                                        length = 0;
                                         break;
                                 }
                                 break;
                             case 7:
-                                byte Sender_Uleb = reader.ReadByte();
-                                byte Sender_Size = reader.ReadByte();
-                                string Sender = Encoding.ASCII.GetString(reader.ReadBytes(Sender_Size));
+                                byte senderUleb = reader.ReadByte();
+                                byte senderSize = reader.ReadByte();
+                                string sender = Encoding.ASCII.GetString(reader.ReadBytes(senderSize));
 
-                                byte Message_Uleb = reader.ReadByte();
-                                byte Message_Size = reader.ReadByte();
-                                string Message = Encoding.ASCII.GetString(reader.ReadBytes(Message_Size));
+                                byte messageUleb = reader.ReadByte();
+                                byte messageSize = reader.ReadByte();
+                                string message = Encoding.ASCII.GetString(reader.ReadBytes(messageSize));
 
-                                byte Target_Uleb = reader.ReadByte();
-                                byte Target_Size = reader.ReadByte();
-                                string Target = Encoding.ASCII.GetString(reader.ReadBytes(Target_Size));
+                                byte targetUleb = reader.ReadByte();
+                                byte targetSize = reader.ReadByte();
+                                string target = Encoding.ASCII.GetString(reader.ReadBytes(targetSize));
 
-                                if(Message[0] == Prefix)
-                                    OnPrefixedMessage(Sender, Target, Message);
+                                if(message[0] == Prefix)
+                                    OnPrefixedMessage(sender, target, message);
 
-                                OnMessage(Sender, Target, Message);
+                                OnMessage(sender, target, message);
 
                                 break;
                             case 8:
@@ -236,12 +238,12 @@ namespace StattyBot {
                                 break;
                             case 68: // Channel joined
                                 byte unknown1 = reader.ReadByte();
-                                byte ChannelLength = reader.ReadByte();
+                                byte channelLength = reader.ReadByte();
                                 #if DEBUG
                                 Console.WriteLine("Unknown1: " + unknown1);
                                 #endif
-                                string Channel = Encoding.ASCII.GetString(reader.ReadBytes(ChannelLength));
-                                Console.WriteLine("Autojoining " + Channel);
+                                string channel = Encoding.ASCII.GetString(reader.ReadBytes(channelLength));
+                                Console.WriteLine("Autojoining " + channel);
                                 break;
                         }
                         ResetReadArray(true);
@@ -290,9 +292,9 @@ namespace StattyBot {
 
 
         public void SendMessage(string Message, string Target) {
-            byte[] UlebSenderName = Uleb128_WriteString(Username);
-            byte[] UlebTarget = Uleb128_WriteString(Target);
-            byte[] UlebMessage = Uleb128_WriteString(Message);
+            byte[] ulebSenderName = Uleb128_WriteString(Username);
+            byte[] ulebTarget = Uleb128_WriteString(Target);
+            byte[] ulebMessage = Uleb128_WriteString(Message);
 
             //Console.WriteLine("Sending Message: {0}", Message);
 
@@ -308,12 +310,12 @@ namespace StattyBot {
                 using (BinaryWriter writer = new BinaryWriter(ms)) {
                     writer.Write((short)1);
                     writer.Write((byte)0);
-                    writer.Write(UlebSenderName.Length + UlebTarget.Length + UlebMessage.Length);
+                    writer.Write(ulebSenderName.Length + ulebTarget.Length + ulebMessage.Length);
 
                     writer.Write((byte)0);
-                    writer.Write(UlebMessage);
-                    writer.Write(UlebTarget);
-                    writer.Write(UlebSenderName);
+                    writer.Write(ulebMessage);
+                    writer.Write(ulebTarget);
+                    writer.Write(ulebSenderName);
                 }
 
                 QueueRequest(ms.ToArray());
@@ -321,14 +323,14 @@ namespace StattyBot {
         }
 
         public void SendStatus(StatusList Status, bool UpdateBeatmap = true, string Text = "") {
-            byte[] UlebText = Uleb128_WriteString(Text);
-            byte[] UlebMapChecksum = Uleb128_WriteString("");
+            byte[] ulebText = Uleb128_WriteString(Text);
+            byte[] ulebMapChecksum = Uleb128_WriteString("");
             using (MemoryStream ms = new MemoryStream()) {
                 using (BinaryWriter writer = new BinaryWriter(ms)) {
                     // Packet header
                     writer.Write((short)0);
                     writer.Write((byte)0);
-                    writer.Write(2 + UlebText.Length + UlebMapChecksum.Length);
+                    writer.Write(2 + ulebText.Length + ulebMapChecksum.Length);
                     // 2: StatusList byte & updateBeatmap bool
 
                     // Actual data
@@ -336,8 +338,8 @@ namespace StattyBot {
                     writer.Write(UpdateBeatmap); // 0x00 for false, 0x01 for true;
 
                     if(UpdateBeatmap) {
-                        writer.Write(UlebText);
-                        writer.Write(UlebMapChecksum);
+                        writer.Write(ulebText);
+                        writer.Write(ulebMapChecksum);
                         writer.Write(0); // Current Mods
                     }
                 }

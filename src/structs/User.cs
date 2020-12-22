@@ -1,4 +1,4 @@
-namespace StattyBot {
+namespace StattyBot.structs {
     public partial class User {
         public string Username { get; set; }
         public long UserId { get; set; }

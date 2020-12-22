@@ -1,7 +1,9 @@
 using System;
 using System.Threading.Tasks;
+using StattyBot.structs;
+using StattyBot.util;
 
-namespace StattyBot {
+namespace StattyBot.commands {
     public class IDCommand : Command {
         public IDCommand() : base("ID", new[]{""}) {}
 
@@ -15,7 +17,7 @@ namespace StattyBot {
                 username = sender;
             }
                     
-            Task<User> task = new APIHandler().userProfile(username);
+            Task<User> task = new ApiHandler().UserProfile(username);
             string english = sender == username ? "Your" : "The";
             task.ContinueWith((Task<User> task) => {
                 client.SendMessage(String.Format("{0}: {1} ID is {2}.", sender, english, task.Result.UserId), target);

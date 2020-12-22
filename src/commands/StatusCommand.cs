@@ -1,4 +1,6 @@
-namespace StattyBot {
+using StattyBot.structs;
+
+namespace StattyBot.commands {
     public class StatusCommand : Command {
         public StatusCommand() : base("Status", new[]{""}) {}
 

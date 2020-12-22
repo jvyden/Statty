@@ -1,4 +1,4 @@
-namespace StattyBot {
+namespace StattyBot.structs {
     public abstract class Command {
         public string   Name {get;} 
         public string[] Aliases {get;}

@@ -1,17 +1,16 @@
-using System;
 using System.Data.SQLite;
-using System.Threading;
 using System.Threading.Tasks;
+using StattyBot.structs;
 
-namespace StattyBot {
-    public class DBHandler {
+namespace StattyBot.util {
+    public class DbHandler {
         SQLiteConnection connection = new SQLiteConnection("Data Source=statty.db");
-        APIHandler apiHandler = new APIHandler();
-        public DBHandler() {
+        ApiHandler apiHandler = new ApiHandler();
+        public DbHandler() {
             connection.Open();
         }
 
-        public InternalUser getInternalUser(int id) {
+        public InternalUser GetInternalUser(int id) {
             SQLiteCommand command = connection.CreateCommand();
 
             command.CommandText = "SELECT * FROM players WHERE id = $id";
@@ -28,7 +27,7 @@ namespace StattyBot {
             else return null;
         }
 
-        public bool doesUserExist(int id) {
+        public bool DoesUserExist(int id) {
             SQLiteCommand command = connection.CreateCommand();
 
             command.CommandText = "SELECT id FROM players WHERE id = $id";
@@ -38,8 +37,8 @@ namespace StattyBot {
             return reader.Read();
         }
 
-        public void addUser(int id) {
-            Task<User> task = apiHandler.userProfile(id);
+        public void AddUser(int id) {
+            Task<User> task = apiHandler.UserProfile(id);
             task.Wait();
             User user = task.Result;
 
@@ -54,7 +53,7 @@ namespace StattyBot {
             command.ExecuteNonQuery();
         }
 
-        public void updateUser(int id, long score, long playcount, int rank) {
+        public void UpdateUser(int id, long score, long playcount, int rank) {
             SQLiteCommand command = connection.CreateCommand();
 
             command.CommandText = "UPDATE players SET score = $score, playcount = $playcount, rank = $rank WHERE id = $id;";

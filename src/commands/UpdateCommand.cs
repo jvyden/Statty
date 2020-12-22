@@ -1,34 +1,36 @@
 using System;
 using System.Threading.Tasks;
+using StattyBot.structs;
+using StattyBot.util;
 
-namespace StattyBot {
+namespace StattyBot.commands {
     public class UpdateCommand : Command {
-        private DBHandler dbHandler = new DBHandler();
+        private DbHandler dbHandler = new DbHandler();
         
         public UpdateCommand() : base("Update", new []{""}) {}
 
         public override void Run(Statty client, string sender, string target, string[] Args) {
-            Task<User> task = new APIHandler().userProfile(sender);
+            Task<User> task = new ApiHandler().UserProfile(sender);
             task.ContinueWith((Task<User> task) => {
                 int id = (int) task.Result.UserId;
                 User user = task.Result;
 
-                if(!dbHandler.doesUserExist(id)) {
+                if(!dbHandler.DoesUserExist(id)) {
                     client.SendMessage(sender + ": One moment, I'm adding you to my database.", target);
-                    dbHandler.addUser(id);
+                    dbHandler.AddUser(id);
                 }
 
-                InternalUser internalUser = dbHandler.getInternalUser(id);
-                long diffScore = user.RankedScore - internalUser.score;
+                InternalUser internalUser = dbHandler.GetInternalUser(id);
+                long diffScore = user.RankedScore - internalUser.Score;
                 long diffPlaycount = 0;
-                long diffRank = user.GlobalRank - internalUser.rank;
+                long diffRank = user.GlobalRank - internalUser.Rank;
 
                 client.SendMessage(
                     String.Format("{0}: Score: {1} | Playcount: {2} | Rank: {3}", 
-                        sender, Util.getPositiveStr(diffScore), Util.getPositiveStr(diffPlaycount), Util.getPositiveStr(-diffRank)
+                        sender, Util.GetPositiveStr(diffScore), Util.GetPositiveStr(diffPlaycount), Util.GetPositiveStr(-diffRank)
                     ), target);
 
-                dbHandler.updateUser(id, user.RankedScore, 0, (int) user.GlobalRank);
+                dbHandler.UpdateUser(id, user.RankedScore, 0, (int) user.GlobalRank);
             });
         }
 

@@ -1,12 +1,13 @@
 using System;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
+using StattyBot.commands;
+using StattyBot.structs;
 
-namespace StattyBot {
+namespace StattyBot.util {
     class CommandHandler {
-        private Statty client;
-        private List<Command> commandList = new List<Command>{};
+        private readonly Statty client;
+        private readonly List<Command> commandList = new List<Command>{};
 
         public CommandHandler(Statty client) {
             this.client = client;
@@ -24,16 +25,16 @@ namespace StattyBot {
 
         public Command FindCommandByInput(string input) {
             foreach (Command command in commandList) {
-                if(String.Equals(command.Name, input, StringComparison.CurrentCultureIgnoreCase)) return command;
+                if(string.Equals(command.Name, input, StringComparison.CurrentCultureIgnoreCase)) return command;
                 if(command.Aliases.Contains(input.ToLower())) return command;
             }
             return null;
         }
 
         public void HandleCommand(string sender, string target, string cmd, string args) {
-            string[] Split = args.Split(' ');
+            string[] split = args.Split(' ');
             Command command = FindCommandByInput(cmd);
-            command?.Run(client, sender, target, Split);
+            command?.Run(client, sender, target, split);
             
             switch(cmd) {
                 case "p":

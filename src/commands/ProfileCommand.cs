@@ -1,7 +1,9 @@
 using System;
 using System.Threading.Tasks;
+using StattyBot.structs;
+using StattyBot.util;
 
-namespace StattyBot {
+namespace StattyBot.commands {
     public class ProfileCommand : Command {
         public ProfileCommand() : base("profile", new[]{""}) {}
 
@@ -16,7 +18,7 @@ namespace StattyBot {
 
             string english = sender == username ? "Your" : "Their";
 
-            Task<User> task = new APIHandler().userProfile(username);
+            Task<User> task = new ApiHandler().UserProfile(username);
             task.ContinueWith((Task<User> task) => {
                 int id = (int) task.Result.UserId;
                 client.SendMessage(String.Format("{0}: {1} profile is at http://oldsu.ayyeve.xyz/user?u={2}", sender, english, id), target);

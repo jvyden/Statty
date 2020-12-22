@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using StattyBot.structs;
+using StattyBot.util;
 
 namespace StattyBot {
     public class Statty : BotClient {
@@ -22,8 +24,8 @@ namespace StattyBot {
         private char Prefix;
 
         private CommandHandler commandHandler;
-        public APIHandler apiHandler;
-        public DBHandler dbHandler;
+        public ApiHandler ApiHandler;
+        public DbHandler DbHandler;
 
         public List<Status> Statuses = new List<Status>{};
 
@@ -46,7 +48,7 @@ namespace StattyBot {
 
             // Handlers
             commandHandler = new CommandHandler(this);
-            apiHandler = new APIHandler();
+            ApiHandler = new ApiHandler();
 
             // Tasks
             Task.Factory.StartNew(() => {
@@ -64,13 +66,13 @@ namespace StattyBot {
         }
 
         public override void OnPrefixedMessage(string Sender, string Target, string Message) {
-            List<string> Split = new List<string>(Message.Substring(1).Split(' '));
-            string Args = "";
+            List<string> split = new List<string>(Message.Substring(1).Split(' '));
+            string args = "";
             try {
-                Args = " " + String.Join(" ", Split.GetRange(1, Split.Count - 1)); // this is FUCKED
+                args = " " + String.Join(" ", split.GetRange(1, split.Count - 1)); // this is FUCKED
             } catch {}
             
-            commandHandler.HandleCommand(Sender, Target, Split[0], Args);
+            commandHandler.HandleCommand(Sender, Target, split[0], args);
         }
 
         public override void OnMessage(string Sender, string Target, string Message) {

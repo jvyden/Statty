@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace flandrecho_common.Shortcuts {
+namespace StattyBot.util {
     class AccuracyCalc {
         private static int GetHits(int one, int two, int three, int four) {
             return one + two + three + four;

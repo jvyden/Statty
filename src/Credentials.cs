@@ -4,9 +4,9 @@ using System;
 namespace StattyBot {
     class Credentials {
         public Credentials() {      
-            bool Success = DotEnv.AutoConfig();
+            bool success = DotEnv.AutoConfig();
 
-            if(Success) {
+            if(success) {
                 Username = Environment.GetEnvironmentVariable("STATTY_USERNAME");
                 Password = Environment.GetEnvironmentVariable("STATTY_PASSWORD");
             } 

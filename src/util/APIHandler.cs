@@ -1,20 +1,18 @@
 using System;
 using System.Net.Http;
-using Newtonsoft.Json;
-using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using StattyBot.structs;
 
-
-
-namespace StattyBot {
-    public class APIHandler {
+namespace StattyBot.util {
+    public class ApiHandler {
         private HttpClient client = new HttpClient();
-        public APIHandler() {
+        public ApiHandler() {
             client.BaseAddress = new Uri("https://oldsu.ayyeve.xyz/api/");
             client.DefaultRequestHeaders.Accept.Clear();
         }
 
-        public async Task<User> userProfile(int id) {
+        public async Task<User> UserProfile(int id) {
             return await Task.Run(async () => {
                 var request = new HttpRequestMessage {
                     RequestUri = new Uri(client.BaseAddress + "userProfile"),
@@ -30,7 +28,7 @@ namespace StattyBot {
             });
         }
 
-        public async Task<User> userProfile(string username) {
+        public async Task<User> UserProfile(string username) {
             #if DEBUG
             Console.WriteLine("Attempting to find ID of " + username);
             #endif

@@ -1,6 +1,7 @@
 using System;
+using StattyBot.structs;
 
-namespace StattyBot
+namespace StattyBot.commands
 {
     public class RollCommand : Command {
         public RollCommand() : base("Roll", new []{"r"}) {}
@@ -16,8 +17,8 @@ namespace StattyBot
                 // ignored
             }
 
-            int RandomNumber = new Random().Next(0, max);
-            client.SendMessage(sender + " rolled a " + RandomNumber + "!", target);
+            int randomNumber = new Random().Next(0, max);
+            client.SendMessage(sender + " rolled a " + randomNumber + "!", target);
         }
     }
 }

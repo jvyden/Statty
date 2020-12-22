@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace flandrecho_common.Shortcuts {
+namespace StattyBot.util {
     class GetUnixTime {
         public static long Now() {
             return ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds();

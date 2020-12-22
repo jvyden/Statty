@@ -1,15 +1,15 @@
-namespace StattyBot {
+namespace StattyBot.structs {
     public class InternalUser {
-        public long id;
-        public long score;
-        public long playcount;
-        public int rank;
+        public long Id;
+        public long Score;
+        public long Playcount;
+        public int Rank;
 
         public InternalUser(long id, long score, long playcount, int rank) {
-            this.id = id;
-            this.score = score;
-            this.playcount = playcount;
-            this.rank = rank;
+            this.Id = id;
+            this.Score = score;
+            this.Playcount = playcount;
+            this.Rank = rank;
         }
     }
 }

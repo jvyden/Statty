@@ -1,4 +1,4 @@
-namespace StattyBot {
+namespace StattyBot.structs {
     public enum StatusList {
         IDLE = 0,
         AFK = 1,

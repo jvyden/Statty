@@ -1,4 +1,6 @@
-namespace StattyBot {
+using StattyBot.structs;
+
+namespace StattyBot.commands {
     public class HelpCommand : Command {
         public HelpCommand() : base("Help", new []{"h"}) {
             
