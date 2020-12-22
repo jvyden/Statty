@@ -1,5 +1,5 @@
 namespace StattyBot.util {
-    class Util {
+    public class Util {
         public static string GetPositive(int i) {
             if(i > 0) return "+";
             else return "";
