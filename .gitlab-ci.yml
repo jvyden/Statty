@@ -22,7 +22,7 @@ buildDebug:
     - "dotnet build"
   artifacts:
     paths:
-      - bin/Debug
+      - StattyBot/bin/Debug
     expire_in: 3 days
     
 buildStaging:
@@ -31,17 +31,9 @@ buildStaging:
     - "dotnet build --configuration Staging"
   artifacts:
     paths:
-      - bin/Staging
+      - StattyBot/bin/Staging
     expire_in: 2 weeks
     
-test:
-  stage: test
-  script:
-    - "dotnet test"
-  artifacts:
-  
-
-
 buildRelease:
   stage: build
   retry: 1
@@ -49,7 +41,14 @@ buildRelease:
     - "dotnet build --configuration Release"
   artifacts:
     paths:
-      - bin/Release
+      - StattyBot/bin/Release
+        
+test:
+  stage: test
+  script:
+    - "dotnet test"
+  artifacts:
+    
 
 deployProduction:
   image: kroniak/ssh-client
