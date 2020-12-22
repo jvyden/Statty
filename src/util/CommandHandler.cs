@@ -15,6 +15,7 @@ namespace StattyBot {
             commandList.Add(new RollCommand());
             commandList.Add(new IDCommand());
             commandList.Add(new ProfileCommand());
+            commandList.Add(new UpdateCommand());
             
             #if DEBUG
                 commandList.Add(new StatusCommand());
