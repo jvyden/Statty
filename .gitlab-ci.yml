@@ -45,6 +45,8 @@ buildRelease:
         
 test:
   stage: test
+  dependencies:
+    - buildDebug
   script:
     - "dotnet test"
   artifacts:
