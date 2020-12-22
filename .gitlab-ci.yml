@@ -1,7 +1,9 @@
+# Setup
 image: mcr.microsoft.com/dotnet/sdk:3.1
 
 stages:
   - build
+  - test
   - deploy
 
 cache:
@@ -11,6 +13,8 @@ cache:
 
 before_script:
   - "dotnet restore"
+    
+# Actual jobs
 
 buildDebug:
   stage: build
@@ -29,6 +33,13 @@ buildStaging:
     paths:
       - bin/Staging
     expire_in: 2 weeks
+    
+test:
+  stage: test
+  script:
+    - "dotnet test"
+  artifacts:
+  
 
 
 buildRelease:
