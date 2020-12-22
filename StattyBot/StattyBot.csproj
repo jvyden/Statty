@@ -12,10 +12,16 @@
     <PackageReference Include="System.Data.SQLite" Version="1.0.113.6" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.6" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="src\Tests" />
+    <Folder Include="StattyBot" />
+  </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Staging'">
     <ConfigurationGroup>Release</ConfigurationGroup>
     <DefineConstants>RELEASE;TRACE;FLAN2</DefineConstants>
+    <StartupObject>StattyBot.Program</StartupObject>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
