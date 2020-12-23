@@ -3,6 +3,7 @@ bin/
 Flandre-chan-tcp.7z
 .vscode
 .idea
+*.DotSettings.user
 
 # StattyBot specific
 irclog.txt
