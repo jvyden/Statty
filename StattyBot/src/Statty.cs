@@ -66,13 +66,9 @@ namespace StattyBot {
         }
 
         public override void OnPrefixedMessage(string Sender, string Target, string Message) {
-            List<string> split = new List<string>(Message.Substring(1).Split(' '));
-            string args = "";
-            try {
-                args = " " + String.Join(" ", split.GetRange(1, split.Count - 1)); // this is FUCKED
-            } catch {}
+            ParsedCommand command = commandHandler.ParseCommand(Message);
             
-            commandHandler.HandleCommand(Sender, Target, split[0], args);
+            commandHandler.HandleCommand(Sender, Target, command.Command, command.Args);
         }
 
         public override void OnMessage(string Sender, string Target, string Message) {

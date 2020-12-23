@@ -5,7 +5,7 @@ using StattyBot.commands;
 using StattyBot.structs;
 
 namespace StattyBot.util {
-    class CommandHandler {
+    public class CommandHandler {
         private readonly Statty client;
         private readonly List<Command> commandList = new List<Command>{};
 
@@ -23,6 +23,23 @@ namespace StattyBot.util {
             #endif
         }
 
+        public void AddCommand(Command command) {
+            commandList.Add(command);
+        }
+
+        public ParsedCommand ParseCommand(string message) {
+            List<string> split = new List<string>(message.Substring(1).Split(' '));
+            string args = "";
+            try {
+                args = " " + String.Join(" ", split.GetRange(1, split.Count - 1)); // this is FUCKED
+            }
+            catch {
+                // ignored
+            }
+
+            return new ParsedCommand(split[0], args);
+        }
+
         public Command FindCommandByInput(string input) {
             foreach (Command command in commandList) {
                 if(string.Equals(command.Name, input, StringComparison.CurrentCultureIgnoreCase)) return command;
@@ -35,14 +52,6 @@ namespace StattyBot.util {
             string[] split = args.Split(' ');
             Command command = FindCommandByInput(cmd);
             command?.Run(client, sender, target, split);
-            
-            switch(cmd) {
-                case "p":
-                case "profile": {
-
-                    break;
-                }
-            }
         }
     }
 }
