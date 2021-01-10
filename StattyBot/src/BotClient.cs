@@ -50,7 +50,8 @@ namespace StattyBot {
 
         private BlockingCollection<byte[]> RequestQueue = new BlockingCollection<byte[]>();
 
-
+        private static Credentials _credentials = new Credentials();
+        
         public BotClient(string Username, string PlainPassword, char Prefix) {
             this.Username = Username;
             this.Password = Sha256(PlainPassword);
@@ -75,8 +76,7 @@ namespace StattyBot {
 
         private void Connect() {
             try {
-                int port = 13381;
-                client = new TcpClient("REDACTED.INVALID.URL", port);
+                client = new TcpClient(_credentials.Host, _credentials.Port);
                 client.NoDelay = true;
 
                 stream = client.GetStream();
