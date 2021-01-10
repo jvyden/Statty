@@ -76,10 +76,7 @@ namespace StattyBot {
         private void Connect() {
             try {
                 int port = 13381;
-                #if FLAN2
-                    port = 13382;
-                #endif
-                client = new TcpClient("***REMOVED***", port);
+                client = new TcpClient("REDACTED.INVALID.URL", port);
                 client.NoDelay = true;
 
                 stream = client.GetStream();
