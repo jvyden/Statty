@@ -73,23 +73,23 @@ deployProduction:
     name: production
   cache:
     
-deployStaging:
-  image: kroniak/ssh-client
-  stage: deploy
-  only:
-    refs:
-      - master
-  dependencies: ["buildStaging"]
-  before_script:
-    - eval $(ssh-agent -s)
-    - echo "$SSH_STAGING_KEY" | tr -d '\r' | ssh-add -
-    - mkdir -p ~/.ssh
-    - chmod 700 ~/.ssh
-  script:
-    - ssh -o StrictHostKeyChecking=no statty-staging@jvyden.xyz ./init-deploy.sh
-    - scp -o StrictHostKeyChecking=no -r StattyBot/bin/Staging statty-staging@jvyden.xyz:~/Statty
-    - ssh -o StrictHostKeyChecking=no statty-staging@jvyden.xyz ./finish-deploy.sh
-  environment:
-    name: staging
-  cache:
+#deployStaging:
+#  image: kroniak/ssh-client
+#  stage: deploy
+#  only:
+#    refs:
+#      - master
+#  dependencies: ["buildStaging"]
+#  before_script:
+#    - eval $(ssh-agent -s)
+#    - echo "$SSH_STAGING_KEY" | tr -d '\r' | ssh-add -
+#    - mkdir -p ~/.ssh
+#    - chmod 700 ~/.ssh
+#  script:
+#    - ssh -o StrictHostKeyChecking=no statty-staging@jvyden.xyz ./init-deploy.sh
+#    - scp -o StrictHostKeyChecking=no -r StattyBot/bin/Staging statty-staging@jvyden.xyz:~/Statty
+#    - ssh -o StrictHostKeyChecking=no statty-staging@jvyden.xyz ./finish-deploy.sh
+#  environment:
+#    name: staging
+#  cache:
     
