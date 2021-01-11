@@ -49,6 +49,8 @@ namespace StattyBot {
 
         private int UserId = -1;
 
+        public PlayerList playerList = new PlayerList();
+
         private BlockingCollection<byte[]> RequestQueue = new BlockingCollection<byte[]>();
 
         private static Credentials _credentials = new Credentials();
@@ -262,12 +264,13 @@ namespace StattyBot {
                                     player.TimeZone = reader.ReadByte();
                                     player.Country = ReadString(reader);
                                 }
-                                
-                                Console.WriteLine($"{player.Username} #{player.Rank} ({player.UserID}): {player.Status} {player.StatusText}");
+
+                                playerList.UpdatePlayer(player);
                                 break;
                             case 13: // User quit
-                                Console.WriteLine(System.Text.Encoding.Default.GetString(ReadBuffer));
-                                Console.WriteLine(BitConverter.ToString(ReadBuffer).Replace("-","").ToLower());
+                                int userId = reader.ReadInt32();
+                                
+                                playerList.RemovePlayer(userId);
                                 break;
                             case 68: // Channel joined
                                 string channel = ReadString(reader);
