@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using StattyBot.structs;
 
 namespace StattyBot {
     public class PlayerList {
         private List<Player> players = new List<Player>();
+
+        private string[] botPlayers = {"Statty", "Flandre-chan", "Beyley-chan"};
 
         public Player FindPlayer(string username) {
             return players.Find(player => player.Username.Equals(username));
@@ -29,6 +32,7 @@ namespace StattyBot {
         public int GetPlayersIngame() {
             int count = 0;
             foreach (Player player in players) {
+                if(botPlayers.Contains(player.Username)) continue;
                 if(player.Status == StatusList.PLAYING || player.Status == StatusList.MULTIPLAYING) count++;
             }
             return count;
@@ -37,6 +41,7 @@ namespace StattyBot {
         public int GetPlayersAfk() {
             int count = 0;
             foreach (Player player in players) {
+                if(botPlayers.Contains(player.Username)) continue;
                 if(player.Status == StatusList.AFK) count++;
             }
             return count;
