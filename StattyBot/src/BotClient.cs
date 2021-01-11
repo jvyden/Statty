@@ -78,6 +78,7 @@ namespace StattyBot {
         }
 
         private void Connect() {
+            playerList.RemoveAllPlayers();
             try {
                 client = new TcpClient(environment.Host, environment.Port);
                 client.NoDelay = true;
@@ -118,6 +119,7 @@ namespace StattyBot {
         }
 
         private void Disconnect() {
+            playerList.RemoveAllPlayers();
             if(Authenticated) SendExit();
             
             Connected = false;
@@ -125,7 +127,6 @@ namespace StattyBot {
 
             if (client != null && client.Connected)
                 client.Close();
-
         }
 
         public void Initialize() {

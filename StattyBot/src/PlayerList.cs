@@ -33,6 +33,10 @@ namespace StattyBot {
             }
         }
 
+        public void RemoveAllPlayers() {
+            players.Clear();
+        }
+
         public void UpdatePlayer(Player newPlayer) {
             int index = FindPlayerIndex(newPlayer.Username);
             if(index >= 0) {
