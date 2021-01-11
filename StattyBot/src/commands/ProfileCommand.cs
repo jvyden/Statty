@@ -21,7 +21,7 @@ namespace StattyBot.commands {
             Task<User> task = new ApiHandler().UserProfile(username);
             task.ContinueWith((Task<User> task) => {
                 int id = (int) task.Result.UserId;
-                client.SendMessage(String.Format("{0}: {1} profile is at http://oldsu.ayyeve.xyz/user?u={2}", sender, english, id), target);
+                client.SendMessage($"{sender}: {english} profile is at http://oldsu.ayyeve.xyz/user?u={id}", target);
             });
         }
     }

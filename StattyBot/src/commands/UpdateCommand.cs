@@ -26,9 +26,7 @@ namespace StattyBot.commands {
                 long diffRank = user.GlobalRank - internalUser.Rank;
 
                 client.SendMessage(
-                    String.Format("{0}: Score: {1} | Playcount: {2} | Rank: {3}", 
-                        sender, Util.GetPositiveStr(diffScore), Util.GetPositiveStr(diffPlaycount), Util.GetPositiveStr(-diffRank)
-                    ), target);
+                    $"{sender}: Score: {Util.GetPositiveStr(diffScore)} | Playcount: {Util.GetPositiveStr(diffPlaycount)} | Rank: {Util.GetPositiveStr(-diffRank)}", target);
 
                 dbHandler.UpdateUser(id, user.RankedScore, 0, (int) user.GlobalRank);
             });

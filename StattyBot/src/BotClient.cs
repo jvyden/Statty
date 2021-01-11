@@ -333,11 +333,11 @@ namespace StattyBot {
 
             Console.Write("IRCLog: ");
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write(String.Format("<{0}>: ", Username));
+            Console.Write($"<{Username}>: ");
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.Write(Message + "\n");
 
-            File.AppendAllText("irclog.txt", String.Format("IRCLog: **<{0}>**: {1}\n", Username, Message));
+            File.AppendAllText("irclog.txt", $"IRCLog: **<{Username}>**: {Message}\n");
 
             using (MemoryStream ms = new MemoryStream()) {
                 using (BinaryWriter writer = new BinaryWriter(ms)) {
@@ -409,7 +409,7 @@ namespace StattyBot {
         public virtual void OnPrefixedMessage(string Sender, string Target, string Message) { }
         public virtual void OnMessage(string Sender, string Target, string Message) {
             Console.WriteLine("IRCLog: [{0}] <{1}>: {2}", Target, Sender, Message);
-            File.AppendAllText("irclog.txt",String.Format("IRCLog: [{0}] <{1}>: {2}\n", Target, Sender, Message));
+            File.AppendAllText("irclog.txt", $"IRCLog: [{Target}] <{Sender}>: {Message}\n");
         }
     }
 }
