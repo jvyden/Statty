@@ -188,6 +188,9 @@ namespace StattyBot {
                                         Console.WriteLine("[*.*] Authentication Failed! Invalid Login!");
                                         Thread.Sleep(2500);
                                         goto Begin;
+                                    case -2:
+                                        Console.WriteLine("[*.*] Client too old.");
+                                        break;
                                     case -3:
                                         Console.WriteLine("[*.*] Your bot has been banned!");
                                         break;
