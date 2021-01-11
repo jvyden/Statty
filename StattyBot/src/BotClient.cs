@@ -188,10 +188,6 @@ namespace StattyBot {
                             compression = ReadBuffer[2] == 1;
                             length = BitConverter.ToUInt32(ReadBuffer, 3);
 
-                            #if DEBUG
-                            Console.WriteLine("Got packet (ID: {0} | Length: {1})", readType, length.ToString());
-                            #endif
-
                             ResetReadArray(false);
                             ReadBuffer = new byte[length];
                         }
@@ -237,9 +233,6 @@ namespace StattyBot {
 
                                 break;
                             case 8:
-                                #if DEBUG
-                                Console.WriteLine("Received ping, sending reply");
-                                #endif
                                 SendPong();
                                 break;
                             case 12: // Bancho_HandleOsuUpdate
@@ -354,8 +347,20 @@ namespace StattyBot {
 
             return ret.ToArray();
         }
+        
+        // Packets
 
-
+        public void SendPacketNoData(short id) {
+            using (MemoryStream ms = new MemoryStream()) {
+                using (BinaryWriter writer = new BinaryWriter(ms)) {
+                    writer.Write((short)3);
+                    writer.Write((byte)0);
+                    writer.Write(0);
+                }
+                QueueRequest(ms.ToArray());
+            }
+        }
+        
         public void SendMessage(string Message, string Target) {
             byte[] ulebSenderName = Uleb128_WriteString(Username);
             byte[] ulebTarget = Uleb128_WriteString(Target);
@@ -413,14 +418,7 @@ namespace StattyBot {
         }
 
         private void SendPong() {
-            using (MemoryStream ms = new MemoryStream()) {
-                using (BinaryWriter writer = new BinaryWriter(ms)) {
-                    writer.Write((short)4);
-                    writer.Write((byte)0);
-                    writer.Write(0);
-                }
-                QueueRequest(ms.ToArray());
-            }
+            SendPacketNoData(4);
         }
 
         public void SendStatus(Status status) {
@@ -428,37 +426,18 @@ namespace StattyBot {
         }
 
         public void SendExit() {
-            using (MemoryStream ms = new MemoryStream()) {
-                using (BinaryWriter writer = new BinaryWriter(ms)) {
-                    writer.Write((short)3);
-                    writer.Write((byte)0);
-                    writer.Write(0);
-                }
-                QueueRequest(ms.ToArray());
-            }
+            SendPacketNoData(2);
         }
 
         public void JoinLobby() {
-            using (MemoryStream ms = new MemoryStream()) {
-                using (BinaryWriter writer = new BinaryWriter(ms)) {
-                    writer.Write((short)31);
-                    writer.Write((byte)0);
-                    writer.Write(0);
-                }
-                QueueRequest(ms.ToArray());
-            }
+            SendPacketNoData(31);
         }
         
         public void RequestPresence() {
-            using (MemoryStream ms = new MemoryStream()) {
-                using (BinaryWriter writer = new BinaryWriter(ms)) {
-                    writer.Write((short)3);
-                    writer.Write((byte)0);
-                    writer.Write(0);
-                }
-                QueueRequest(ms.ToArray());
-            }
+            SendPacketNoData(3);
         }
+
+
 
         public virtual void OnPrefixedMessage(string Sender, string Target, string Message) { }
         public virtual void OnMessage(string Sender, string Target, string Message) {
