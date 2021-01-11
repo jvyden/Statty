@@ -13,7 +13,7 @@ namespace StattyBot.util {
             client.DefaultRequestHeaders.Accept.Clear();
         }
         
-        public async Task WriteData(int playerCount, int lobbyCount, int playersInMulti) {
+        public async Task WriteData(int playerCount, int lobbyCount, int playersInMulti, int playersInGame, int playersAfk) {
             await Task.Run(async () => {
                 long time = DateTimeOffset.Now.ToUnixTimeMilliseconds() * 1000000;
                 var request = new HttpRequestMessage {
@@ -21,7 +21,9 @@ namespace StattyBot.util {
                     Method = HttpMethod.Post,
                     Content = new StringContent($"statty playerCount={playerCount} {time}\n" +
                                                 $"statty lobbyCount={lobbyCount} {time}\n" +
-                                                $"statty playersInMulti={playersInMulti} {time}")
+                                                $"statty playersInMulti={playersInMulti} {time}\n" +
+                                                $"statty playersInGame={playersInGame} {time}\n" +
+                                                $"statty playersAfk={playersAfk} {time}\n")
                 };
                 HttpResponseMessage response = await client.SendAsync(request);
                 #if DEBUG

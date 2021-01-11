@@ -72,7 +72,9 @@ namespace StattyBot {
                         int playerCount = playerList.GetPlayers().Count;
                         int lobbyCount = lobby.GetRooms().Count;
                         int playersInMulti = lobby.GetPlayerCount();
-                        await influxDbHandler.WriteData(playerCount, lobbyCount, playersInMulti);
+                        int playersInGame = playerList.GetPlayersIngame();
+                        int playersAfk = playerList.GetPlayersAfk();
+                        await influxDbHandler.WriteData(playerCount, lobbyCount, playersInMulti, playersInGame, playersAfk);
                     }
                     Thread.Sleep(1000);
                 }

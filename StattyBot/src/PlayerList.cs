@@ -26,6 +26,22 @@ namespace StattyBot {
             return new List<Player>(players);
         }
 
+        public int GetPlayersIngame() {
+            int count = 0;
+            foreach (Player player in players) {
+                if(player.Status == StatusList.PLAYING || player.Status == StatusList.MULTIPLAYING) count++;
+            }
+            return count;
+        }
+        
+        public int GetPlayersAfk() {
+            int count = 0;
+            foreach (Player player in players) {
+                if(player.Status == StatusList.AFK) count++;
+            }
+            return count;
+        }
+
         public void RemovePlayer(int id) {
             int index = FindPlayerIndex(id);
             if(index >= 0) {
