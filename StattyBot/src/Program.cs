@@ -2,9 +2,9 @@
 
 namespace StattyBot {
     class Program {
-        private static Credentials _credentials = new Credentials();
+        private static Environment environment = new Environment();
         static void Main(string[] args) {
-            Statty bot = new Statty(_credentials.Username, _credentials.Password, '$');
+            Statty bot = new Statty(environment.Username, environment.Password, '$');
             bot.Initialize();
             Console.ReadLine();
         }

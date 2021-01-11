@@ -53,7 +53,7 @@ namespace StattyBot {
 
         private BlockingCollection<byte[]> RequestQueue = new BlockingCollection<byte[]>();
 
-        private static Credentials _credentials = new Credentials();
+        private static Environment environment = new Environment();
         
         public BotClient(string Username, string PlainPassword, char Prefix) {
             this.Username = Username;
@@ -79,7 +79,7 @@ namespace StattyBot {
 
         private void Connect() {
             try {
-                client = new TcpClient(_credentials.Host, _credentials.Port);
+                client = new TcpClient(environment.Host, environment.Port);
                 client.NoDelay = true;
 
                 stream = client.GetStream();
@@ -269,7 +269,6 @@ namespace StattyBot {
                                 break;
                             case 13: // User quit
                                 int userId = reader.ReadInt32();
-                                
                                 playerList.RemovePlayer(userId);
                                 break;
                             case 68: // Channel joined

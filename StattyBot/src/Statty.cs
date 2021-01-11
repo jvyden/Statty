@@ -26,6 +26,8 @@ namespace StattyBot {
         private CommandHandler commandHandler;
         public ApiHandler ApiHandler;
         public DbHandler DbHandler;
+        private InfluxDBHandler influxDbHandler = new InfluxDBHandler();
+        private Environment environment = new Environment();
 
         public List<Status> Statuses = new List<Status>{};
 
@@ -61,6 +63,16 @@ namespace StattyBot {
                         // or for a process to be unnecessarily complex or inefficient. 
                     }
                     Thread.Sleep(25);
+                }
+            });
+
+            Task.Factory.StartNew(async () => {
+                while (true) {
+                    if(this.Authenticated && environment.InfluxEnabled) {
+                        int playerCount = playerList.GetPlayers().Count;
+                        await influxDbHandler.WriteData(playerCount);
+                    }
+                    Thread.Sleep(1000);
                 }
             });
         }
