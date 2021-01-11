@@ -19,7 +19,8 @@ namespace StattyBot.util {
                 var request = new HttpRequestMessage {
                     RequestUri = new Uri(client.BaseAddress + $"write?db=telegraf"),
                     Method = HttpMethod.Post,
-                    Content = new StringContent($"statty playerCount={playerCount} {time}\n" +
+                    Content = new StringContent($"statty status=1 {time}\n" +
+                                                $"statty playerCount={playerCount} {time}\n" +
                                                 $"statty lobbyCount={lobbyCount} {time}\n" +
                                                 $"statty playersInMulti={playersInMulti} {time}\n" +
                                                 $"statty playersInGame={playersInGame} {time}\n" +

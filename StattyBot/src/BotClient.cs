@@ -70,12 +70,12 @@ namespace StattyBot {
                     }
                 }
             });
-            Task.Factory.StartNew(() => {
-                while (true) {
-                    Thread.Sleep(25000);
-                    QueueRequest(new byte[]{3,0,0,0,0,0,0});
-                }
-            });
+            // Task.Factory.StartNew(() => {
+            //     while (true) {
+            //         Thread.Sleep(25000);
+            //         RequestPresence();
+            //     }
+            // });
         }
 
         private void Connect() {
@@ -220,6 +220,7 @@ namespace StattyBot {
                                         readType = 0;
                                         compression = false;
                                         length = 0;
+                                        RequestPresence();
                                         JoinLobby();
                                         break;
                                 }
@@ -441,6 +442,17 @@ namespace StattyBot {
             using (MemoryStream ms = new MemoryStream()) {
                 using (BinaryWriter writer = new BinaryWriter(ms)) {
                     writer.Write((short)31);
+                    writer.Write((byte)0);
+                    writer.Write(0);
+                }
+                QueueRequest(ms.ToArray());
+            }
+        }
+        
+        public void RequestPresence() {
+            using (MemoryStream ms = new MemoryStream()) {
+                using (BinaryWriter writer = new BinaryWriter(ms)) {
+                    writer.Write((short)3);
                     writer.Write((byte)0);
                     writer.Write(0);
                 }
