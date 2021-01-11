@@ -16,8 +16,8 @@ namespace StattyBot.util {
         public async Task WriteData(int playerCount, int lobbyCount, int playersInMulti, int playersInGame, int playersAfk) {
             await Task.Run(async () => {
                 long time = DateTimeOffset.Now.ToUnixTimeMilliseconds() * 1000000;
-                var request = new HttpRequestMessage {
-                    RequestUri = new Uri(client.BaseAddress + $"write?db=telegraf"),
+                HttpRequestMessage request = new HttpRequestMessage {
+                    RequestUri = new Uri(client.BaseAddress + "write?db=telegraf"),
                     Method = HttpMethod.Post,
                     Content = new StringContent($"statty status=1 {time}\n" +
                                                 $"statty playerCount={playerCount} {time}\n" +
@@ -36,9 +36,21 @@ namespace StattyBot.util {
             });
         }
 
-        // public void WriteData(int playerCount) {
-        //     // WriteApi writeApi = influxDBClient.GetWriteApi();
-        //     // writeApi.WriteRecord(WritePrecision.Ms, $"statty playerCount={playerCount}");
-        // }
+        public async Task WriteOfflineStatus() {
+            await Task.Run(async () => {
+                long time = DateTimeOffset.Now.ToUnixTimeMilliseconds() * 1000000;
+                HttpRequestMessage request = new HttpRequestMessage{
+                    RequestUri = new Uri(client.BaseAddress + "write?db=telegraf"),
+                    Method = HttpMethod.Post,
+                    Content = new StringContent($"statty status=2 {time}")
+                };
+                HttpResponseMessage response = await client.SendAsync(request);
+                #if DEBUG
+                if((int)response.StatusCode < 200 || (int)response.StatusCode > 299) {
+                    Console.WriteLine(response.Content);
+                }
+                #endif
+            });
+        }
     }
 }

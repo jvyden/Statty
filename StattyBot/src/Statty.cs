@@ -68,13 +68,15 @@ namespace StattyBot {
 
             Task.Factory.StartNew(async () => {
                 while (true) {
-                    if(this.Authenticated && environment.InfluxEnabled) {
+                    if(Authenticated && environment.InfluxEnabled) {
                         int playerCount = playerList.GetPlayers().Count;
                         int lobbyCount = lobby.GetRooms().Count;
                         int playersInMulti = lobby.GetPlayerCount();
                         int playersInGame = playerList.GetPlayersIngame();
                         int playersAfk = playerList.GetPlayersAfk();
                         await influxDbHandler.WriteData(playerCount, lobbyCount, playersInMulti, playersInGame, playersAfk);
+                    } else if(!Authenticated && environment.InfluxEnabled) {
+                        await influxDbHandler.WriteOfflineStatus();
                     }
                     Thread.Sleep(1000);
                 }
