@@ -50,6 +50,7 @@ namespace StattyBot {
         private int UserId = -1;
 
         public PlayerList playerList = new PlayerList();
+        public Lobby lobby = new Lobby();
 
         private BlockingCollection<byte[]> RequestQueue = new BlockingCollection<byte[]>();
 
@@ -78,6 +79,7 @@ namespace StattyBot {
         }
 
         private void Connect() {
+            lobby.RemoveAllRooms();
             playerList.RemoveAllPlayers();
             try {
                 client = new TcpClient(environment.Host, environment.Port);
@@ -119,6 +121,7 @@ namespace StattyBot {
         }
 
         private void Disconnect() {
+            lobby.RemoveAllRooms();
             playerList.RemoveAllPlayers();
             if(Authenticated) SendExit();
             
@@ -217,6 +220,7 @@ namespace StattyBot {
                                         readType = 0;
                                         compression = false;
                                         length = 0;
+                                        JoinLobby();
                                         break;
                                 }
                                 break;
@@ -271,6 +275,30 @@ namespace StattyBot {
                             case 13: // User quit
                                 int userId = reader.ReadInt32();
                                 playerList.RemovePlayer(userId);
+                                break;
+                            case 27: // Room updated
+                            case 28: // Room created
+                                MultiplayerRoom room = new MultiplayerRoom();
+
+                                room.MatchId = reader.ReadByte();
+                                room.InProgress = reader.ReadBoolean();
+                                room.MatchType = reader.ReadByte();
+                                room.ActiveMods = reader.ReadInt16();
+                                room.GameName = ReadString(reader);
+                                room.BeatmapName = ReadString(reader);
+                                room.BeatmapId = reader.ReadInt32();
+                                room.BeatmapChecksum = ReadString(reader);
+
+                                for (int i = 0; i < 8; i++) room.UserSlotStatus[i] = (SlotStatus)reader.ReadByte();
+                                for (int i = 0; i < 8; i++) {
+                                    room.SlotId[i] = (room.UserSlotStatus[i] & SlotStatus.CompHasPlayer) > 0 ? reader.ReadInt32() : -1;
+                                }
+                                
+                                lobby.UpdateRoom(room);
+                                break;
+                            case 29: // Room disbanded
+                                int matchId = reader.ReadInt32();
+                                lobby.RemoveRoom(matchId);
                                 break;
                             case 68: // Channel joined
                                 string channel = ReadString(reader);
@@ -402,6 +430,17 @@ namespace StattyBot {
             using (MemoryStream ms = new MemoryStream()) {
                 using (BinaryWriter writer = new BinaryWriter(ms)) {
                     writer.Write((short)3);
+                    writer.Write((byte)0);
+                    writer.Write(0);
+                }
+                QueueRequest(ms.ToArray());
+            }
+        }
+
+        public void JoinLobby() {
+            using (MemoryStream ms = new MemoryStream()) {
+                using (BinaryWriter writer = new BinaryWriter(ms)) {
+                    writer.Write((short)31);
                     writer.Write((byte)0);
                     writer.Write(0);
                 }
