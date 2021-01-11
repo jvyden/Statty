@@ -26,4 +26,19 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <ConfigurationGroup>Release</ConfigurationGroup>
+    <DefineConstants>RELEASE;FLAN2</DefineConstants>
+    <StartupObject>StattyBot.Program</StartupObject>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+    <ConfigurationGroup>Debug</ConfigurationGroup>
+    <DefineConstants>TRACE;FLAN2</DefineConstants>
+    <StartupObject>StattyBot.Program</StartupObject>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+
 </Project>

@@ -37,6 +37,7 @@ namespace StattyBot {
 
         public bool Connected;
         public bool Authenticated;
+        private bool Disconnecting;
 
         private long LastPingTime;
 
@@ -111,10 +112,12 @@ namespace StattyBot {
             LastPingTime = GetUnixTime.Now();
             PingTimeout = SecondsRetry;
 
-            Disconnect(false);
+            Disconnect();
         }
 
-        private void Disconnect(bool ResetTimeout) {
+        private void Disconnect() {
+            if(Authenticated) SendExit();
+            
             Connected = false;
             Authenticated = false;
 
@@ -127,6 +130,13 @@ namespace StattyBot {
             thread = new Thread(Run);
             thread.Priority = ThreadPriority.BelowNormal;
             thread.Start();
+            
+            AppDomain.CurrentDomain.ProcessExit += OnProcessExit; 
+        }
+
+        private void OnProcessExit(object sender, EventArgs e) {
+            Console.WriteLine("Exiting...");
+            Disconnecting = true;
         }
 
         private void ResetReadArray(bool Header) {
@@ -151,8 +161,12 @@ namespace StattyBot {
                     continue;
                 }
 
-                if (client != null && client.Connected) {
+                if(Disconnecting) {
+                    Disconnect();
+                    break;
+                }
 
+                if (client != null && client.Connected) {
                     ushort readType = 0;
                     bool compression;
                     uint length;
@@ -182,7 +196,7 @@ namespace StattyBot {
 
                         switch (readType) {
                             case 5:
-                                UserId = new BinaryReader(new MemoryStream(ReadBuffer)).ReadInt32();
+                                UserId = reader.ReadInt32();
                                 switch (UserId) {
                                     case -1:
                                         Console.WriteLine("[*.*] Authentication Failed! Invalid Login!");
@@ -204,17 +218,9 @@ namespace StattyBot {
                                 }
                                 break;
                             case 7:
-                                byte senderUleb = reader.ReadByte();
-                                byte senderSize = reader.ReadByte();
-                                string sender = Encoding.ASCII.GetString(reader.ReadBytes(senderSize));
-
-                                byte messageUleb = reader.ReadByte();
-                                byte messageSize = reader.ReadByte();
-                                string message = Encoding.ASCII.GetString(reader.ReadBytes(messageSize));
-
-                                byte targetUleb = reader.ReadByte();
-                                byte targetSize = reader.ReadByte();
-                                string target = Encoding.ASCII.GetString(reader.ReadBytes(targetSize));
+                                string sender = ReadString(reader);
+                                string message = ReadString(reader);
+                                string target = ReadString(reader);
 
                                 if(message[0] == Prefix)
                                     OnPrefixedMessage(sender, target, message);
@@ -228,22 +234,44 @@ namespace StattyBot {
                                 #endif
                                 SendPong();
                                 break;
-                            case 12: //Bancho_HandleOsuUpdate?
-                                #if DEBUG
-                                // Console.WriteLine(System.Text.Encoding.Default.GetString(ReadBuffer));
-                                // Console.WriteLine(BitConverter.ToString(ReadBuffer).Replace("-","").ToLower());
-                                #endif
+                            case 12: // Bancho_HandleOsuUpdate
+                                Player player = new Player();
+                                
+                                player.UserID = reader.ReadInt32();
+                                byte clientType = reader.ReadByte(); // 0: Self, 2: Online user
+                                
+                                player.Status = (StatusList) reader.ReadByte();
+                                bool updateBeatmap = reader.ReadBoolean();
+
+                                if(updateBeatmap) {
+                                    player.StatusText = ReadString(reader);
+                                    player.MapChecksum = ReadString(reader);
+                                    player.EnabledMods = reader.ReadUInt16();
+                                }
+
+                                if(clientType > 0) {
+                                    player.RankedScore = reader.ReadInt64();
+                                    player.Accuracy = reader.ReadSingle();
+                                    player.PlayCount = reader.ReadInt32();
+                                    player.TotalScore = reader.ReadInt64();
+                                    player.Rank = reader.ReadUInt16();
+                                }
+                                if(clientType == 2) {
+                                    player.Username = ReadString(reader);
+                                    player.Location = ReadString(reader);
+                                    player.TimeZone = reader.ReadByte();
+                                    player.Country = ReadString(reader);
+                                }
+                                
+                                Console.WriteLine($"{player.Username} #{player.Rank} ({player.UserID}): {player.Status} {player.StatusText}");
                                 break;
                             case 13: // User quit
+                                Console.WriteLine(System.Text.Encoding.Default.GetString(ReadBuffer));
+                                Console.WriteLine(BitConverter.ToString(ReadBuffer).Replace("-","").ToLower());
                                 break;
                             case 68: // Channel joined
-                                byte unknown1 = reader.ReadByte();
-                                byte channelLength = reader.ReadByte();
-                                #if DEBUG
-                                Console.WriteLine("Unknown1: " + unknown1);
-                                #endif
-                                string channel = Encoding.ASCII.GetString(reader.ReadBytes(channelLength));
-                                Console.WriteLine("Autojoining " + channel);
+                                string channel = ReadString(reader);
+                                Console.WriteLine("Auto-joining " + channel);
                                 break;
                         }
                         ResetReadArray(true);
@@ -251,6 +279,11 @@ namespace StattyBot {
                 }
                 Thread.Sleep(25);
             }
+        }
+
+        public string ReadString(BinaryReader reader) {
+            if(reader.ReadByte() == 0) return "";
+            return reader.ReadString();
         }
 
         private byte[] Write_Uleb128(int num) {
@@ -360,6 +393,17 @@ namespace StattyBot {
 
         public void SendStatus(Status status) {
             SendStatus(status.StatusType, status.UpdateBeatmap, status.StatusText);
+        }
+
+        public void SendExit() {
+            using (MemoryStream ms = new MemoryStream()) {
+                using (BinaryWriter writer = new BinaryWriter(ms)) {
+                    writer.Write((short)3);
+                    writer.Write((byte)0);
+                    writer.Write(0);
+                }
+                QueueRequest(ms.ToArray());
+            }
         }
 
         public virtual void OnPrefixedMessage(string Sender, string Target, string Message) { }
