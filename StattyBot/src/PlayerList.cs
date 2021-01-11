@@ -33,7 +33,9 @@ namespace StattyBot {
             int count = 0;
             foreach (Player player in players) {
                 if(botPlayers.Contains(player.Username)) continue;
-                if(player.Status == StatusList.PLAYING || player.Status == StatusList.MULTIPLAYING) count++;
+                if(player.Status == StatusList.PLAYING || 
+                   player.Status == StatusList.MULTIPLAYING || 
+                   player.Status == StatusList.PAUSED) count++;
             }
             return count;
         }
