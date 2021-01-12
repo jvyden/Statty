@@ -4,10 +4,10 @@ namespace StattyBot.commands {
     public class StatusCommand : Command {
         public StatusCommand() : base("Status", new[]{""}) {}
 
-        public override void Run(Statty client, string sender, string target, string[] Args) {
+        public override void Run(Statty client, string sender, string target, string[] args) {
             int id = 1;
             try {
-                id = int.Parse(Args[0]);
+                id = int.Parse(args[0]);
             }
             catch {}
 

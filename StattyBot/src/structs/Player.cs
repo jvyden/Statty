@@ -17,5 +17,7 @@ namespace StattyBot.structs {
         public string Location;
         public int TimeZone;
         public string Country;
+
+        public bool WaitingForMap = false;
     }
 }

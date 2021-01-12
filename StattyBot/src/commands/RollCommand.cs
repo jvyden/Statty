@@ -6,11 +6,11 @@ namespace StattyBot.commands
     public class RollCommand : Command {
         public RollCommand() : base("Roll", new []{"r"}) {}
 
-        public override void Run(Statty client, string sender, string target, string[] Args) {
+        public override void Run(Statty client, string sender, string target, string[] args) {
             int max = 100;
 
             try {
-                if(Args[1] != "") max = int.Parse(Args[1]);
+                if(args[1] != "") max = int.Parse(args[1]);
                 else throw new Exception();
             }
             catch {

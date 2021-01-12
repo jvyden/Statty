@@ -6,7 +6,7 @@ namespace StattyBot.commands {
             
         }
 
-        public override void Run(Statty client, string sender, string target, string[] Args) {
+        public override void Run(Statty client, string sender, string target, string[] args) {
             client.SendMessage("Hi! I'm a Tillerino clone designed to help you track your stats easier.", target);
             System.Threading.Thread.Sleep(100);
             client.SendMessage("Please bear in mind this is in very early stages, and may be buggy. Please send bug reports to jvy#3348 on discord.", target);

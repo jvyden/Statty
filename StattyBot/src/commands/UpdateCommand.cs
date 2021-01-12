@@ -9,7 +9,7 @@ namespace StattyBot.commands {
         
         public UpdateCommand() : base("Update", new []{""}) {}
 
-        public override void Run(Statty client, string sender, string target, string[] Args) {
+        public override void Run(Statty client, string sender, string target, string[] args) {
             Task<User> task = new ApiHandler().UserProfile(sender);
             task.ContinueWith((Task<User> task) => {
                 int id = (int) task.Result.UserId;

@@ -7,10 +7,10 @@ namespace StattyBot.commands {
     public class ProfileCommand : Command {
         public ProfileCommand() : base("profile", new[]{""}) {}
 
-        public override void Run(Statty client, string sender, string target, string[] Args) {
+        public override void Run(Statty client, string sender, string target, string[] args) {
             string username;
             try {
-                if(Args[1] != "") username = Args[1];
+                if(args[1] != "") username = args[1];
                 else throw new Exception();
             } catch {
                 username = sender; 

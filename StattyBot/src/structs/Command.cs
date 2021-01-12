@@ -8,6 +8,6 @@ namespace StattyBot.structs {
             this.Aliases = Aliases;
         }
 
-        public abstract void Run(Statty client, string sender, string target, string[] Args);
+        public abstract void Run(Statty client, string sender, string target, string[] args);
     }
 }
