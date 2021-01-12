@@ -228,7 +228,7 @@ namespace StattyBot {
                                 
                                 Console.Write("IRCLog: ");
                                 Console.ForegroundColor = ConsoleColor.DarkCyan;
-                                Console.Write($"<{Username}>: ");
+                                Console.Write($"<{sender}>: ");
                                 Console.ForegroundColor = ConsoleColor.White;
                                 Console.Write(message + "\n");
 
