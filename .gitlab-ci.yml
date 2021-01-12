@@ -25,14 +25,14 @@ buildDebug:
       - StattyBot/bin/Debug
     expire_in: 3 days
     
-buildStaging:
-  stage: build
-  script:
-    - "dotnet build --configuration Staging"
-  artifacts:
-    paths:
-      - StattyBot/bin/Staging
-    expire_in: 2 weeks
+#buildStaging:
+#  stage: build
+#  script:
+#    - "dotnet build --configuration Staging"
+#  artifacts:
+#    paths:
+#      - StattyBot/bin/Staging
+#    expire_in: 2 weeks
     
 buildRelease:
   stage: build
