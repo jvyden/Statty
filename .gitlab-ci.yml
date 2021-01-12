@@ -42,6 +42,7 @@ buildRelease:
   artifacts:
     paths:
       - StattyBot/bin/Release
+      - BeatmapProcessor/bin/Release
         
 test:
   stage: test
@@ -68,6 +69,7 @@ deployProduction:
   script:
     - ssh -o StrictHostKeyChecking=no statty@jvyden.xyz ./init-deploy.sh
     - scp -o StrictHostKeyChecking=no -r StattyBot/bin/Release statty@jvyden.xyz:~/Statty
+    - scp -o StrictHostKeyChecking=no -r BeatmapProcessor/bin/Release statty@jvyden.xyz:~/BeatmapProcessor
     - ssh -o StrictHostKeyChecking=no statty@jvyden.xyz ./finish-deploy.sh
   environment:
     name: production
