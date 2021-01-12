@@ -1,6 +1,7 @@
 using System.Data.SQLite;
 using System.Threading.Tasks;
 using StattyBot.structs;
+using BeatmapProcessor;
 
 namespace StattyBot.util {
     public class DbHandler {
@@ -63,6 +64,31 @@ namespace StattyBot.util {
             command.Parameters.AddWithValue("$rank", rank);
 
             command.ExecuteNonQuery();
+        }
+
+        public StattyBeatmap GetBeatmap(string hash) {
+            SQLiteCommand command = connection.CreateCommand();
+
+            command.CommandText = "SELECT * FROM beatmaps WHERE hash = $hash";
+            command.Parameters.AddWithValue("$hash", hash);
+
+            SQLiteDataReader reader = command.ExecuteReader();
+            if(reader.Read()) {
+                StattyBeatmap beatmap = new StattyBeatmap();
+                beatmap.Hash = hash;
+                beatmap.Name = reader.GetString(1);
+                beatmap.CircleSize = reader.GetFloat(2);
+                beatmap.ApproachRate = reader.GetFloat(3);
+                beatmap.HpDrainRate = reader.GetFloat(4);
+                beatmap.OverallDifficulty = reader.GetFloat(5);
+                beatmap.Mode = reader.GetInt16(6);
+                beatmap.TotalScore = reader.GetInt16(7);
+                beatmap.MaxCombo = reader.GetInt32(8);
+                beatmap.StarRating = reader.GetFloat(9);
+                
+                return beatmap;
+            }
+            return null;
         }
     }
 }

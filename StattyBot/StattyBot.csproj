@@ -11,8 +11,8 @@
   <ItemGroup>
     <PackageReference Include="dotenv.net" Version="2.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="System.Data.SQLite" Version="1.0.113.6" />
-    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.6" />
+    <PackageReference Include="System.Data.SQLite" Version="1.0.113.7" />
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.7" />
   </ItemGroup>
   
   <ItemGroup>
@@ -40,5 +40,7 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
-
+  <ItemGroup>
+    <ProjectReference Include="..\BeatmapProcessor\BeatmapProcessor.csproj" />
+  </ItemGroup>
 </Project>

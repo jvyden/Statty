@@ -11,7 +11,7 @@ namespace StattyBot.commands {
             System.Threading.Thread.Sleep(100);
             client.SendMessage("Please bear in mind this is in very early stages, and may be buggy. Please send bug reports to jvy#3348 on discord.", target);
             System.Threading.Thread.Sleep(100);
-            client.SendMessage("Commands: $help, $roll, $update, $profile", target);
+            client.SendMessage("Commands: $help, $roll, $update, $profile, $id, $np", target);
         }
     }
 }

@@ -17,6 +17,7 @@ namespace StattyBot.util {
             commandList.Add(new IDCommand());
             commandList.Add(new ProfileCommand());
             commandList.Add(new UpdateCommand());
+            commandList.Add(new MapInfoCommand());
             
             #if DEBUG
                 commandList.Add(new StatusCommand());
