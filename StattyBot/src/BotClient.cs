@@ -225,6 +225,12 @@ namespace StattyBot {
                                 string sender = ReadString(reader);
                                 string message = ReadString(reader);
                                 string target = ReadString(reader);
+                                
+                                Console.Write("IRCLog: ");
+                                Console.ForegroundColor = ConsoleColor.DarkCyan;
+                                Console.Write($"<{Username}>: ");
+                                Console.ForegroundColor = ConsoleColor.White;
+                                Console.Write(message + "\n");
 
                                 if(message[0] == Prefix)
                                     OnPrefixedMessage(sender, target, message);
@@ -378,7 +384,7 @@ namespace StattyBot {
             Console.Write("IRCLog: ");
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write($"<{Username}>: ");
-            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.ForegroundColor = ConsoleColor.White;
             Console.Write(Message + "\n");
 
             File.AppendAllText("irclog.txt", $"IRCLog: **<{Username}>**: {Message}\n");
@@ -447,9 +453,6 @@ namespace StattyBot {
 
 
         public virtual void OnPrefixedMessage(string Sender, string Target, string Message) { }
-        public virtual void OnMessage(string Sender, string Target, string Message) {
-            Console.WriteLine("IRCLog: [{0}] <{1}>: {2}", Target, Sender, Message);
-            File.AppendAllText("irclog.txt", $"IRCLog: [{Target}] <{Sender}>: {Message}\n");
-        }
+        public virtual void OnMessage(string Sender, string Target, string Message) { }
     }
 }
