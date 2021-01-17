@@ -5,7 +5,6 @@
     </PropertyGroup>
     <ItemGroup>
       <PackageReference Include="OppaiSharp" Version="3.3.0" />
-      <PackageReference Include="OsuParsers" Version="1.7.0" />
       <PackageReference Include="System.Data.SQLite" Version="1.0.113.7" />
       <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.7" />
     </ItemGroup>

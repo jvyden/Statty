@@ -3,8 +3,6 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using OppaiSharp;
-using OsuParsers.Decoders;
-using Beatmap = OsuParsers.Beatmaps.Beatmap;
 using BeatmapCalc = OppaiSharp.Beatmap;
 
 namespace BeatmapProcessor {
@@ -15,24 +13,22 @@ namespace BeatmapProcessor {
             foreach (string file in files) {
                 StattyBeatmap beatmap = new StattyBeatmap();
                 beatmap.Hash = HashFile(file);
-
-                Beatmap osuFile = BeatmapDecoder.Decode(file);
-                
-                beatmap.ApproachRate = osuFile.DifficultySection.ApproachRate;
-                beatmap.CircleSize = osuFile.DifficultySection.CircleSize;
-                beatmap.OverallDifficulty = osuFile.DifficultySection.OverallDifficulty;
-                beatmap.HpDrainRate = osuFile.DifficultySection.HPDrainRate;
                 
                 FileStream stream = File.OpenRead(file);
                 StreamReader reader = new StreamReader(stream);
                 
-                BeatmapCalc beatmapCalc = BeatmapCalc.Read(reader);
+                BeatmapCalc osuFile = BeatmapCalc.Read(reader);
 
-                DiffCalc diff = new DiffCalc().Calc(beatmapCalc);
+                DiffCalc diff = new DiffCalc().Calc(osuFile);
                 beatmap.StarRating = (float) diff.Total;
-                beatmap.MaxCombo = beatmapCalc.GetMaxCombo();
+                beatmap.MaxCombo = osuFile.GetMaxCombo();
+                
+                beatmap.ApproachRate = osuFile.AR;
+                beatmap.CircleSize = osuFile.CS;
+                beatmap.OverallDifficulty = osuFile.OD;
+                beatmap.HpDrainRate = osuFile.HP;
 
-                beatmap.Name = $"{osuFile.MetadataSection.Artist} - {osuFile.MetadataSection.Title} [{osuFile.MetadataSection.Version}]";
+                beatmap.Name = $"{osuFile.Artist} - {osuFile.Title} [{osuFile.Version}]";
                 
                 // Console.WriteLine($"{beatmap.Name} | {beatmap.StarRating}* | AR{beatmap.ApproachRate} | CS{beatmap.CircleSize} | OD{beatmap.OverallDifficulty} | HP{beatmap.HpDrainRate}");
                 dbHandler.AddBeatmap(beatmap);
