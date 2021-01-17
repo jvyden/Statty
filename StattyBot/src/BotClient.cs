@@ -268,13 +268,6 @@ namespace StattyBot {
                                     player.Location = ReadString(reader);
                                     player.TimeZone = reader.ReadByte();
                                     player.Country = ReadString(reader);
-
-                                    Player oldPlayer = playerList.FindPlayer(player.Username);
-                                    if(!updateBeatmap && oldPlayer != null) {
-                                        player.StatusText = oldPlayer.StatusText;
-                                        player.MapChecksum = oldPlayer.MapChecksum;
-                                        player.EnabledMods = oldPlayer.EnabledMods;
-                                    }
                                 }
 
                                 playerList.UpdatePlayer(player);
