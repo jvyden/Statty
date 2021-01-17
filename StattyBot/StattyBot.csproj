@@ -15,10 +15,6 @@
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.7" />
   </ItemGroup>
   
-  <ItemGroup>
-    <Folder Include="StattyBot" />
-  </ItemGroup>
-
   <PropertyGroup Condition="'$(Configuration)' == 'Staging'">
     <ConfigurationGroup>Release</ConfigurationGroup>
     <DefineConstants>RELEASE;TRACE;FLAN2</DefineConstants>
