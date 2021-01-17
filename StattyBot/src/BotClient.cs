@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using StattyBot.structs;
+using StattyBot.structs.packets;
 using StattyBot.util;
 
 namespace StattyBot {
@@ -173,7 +174,7 @@ namespace StattyBot {
                 }
 
                 if (client != null && client.Connected) {
-                    ushort readType = 0;
+                    BanchoPacket readType = 0;
                     bool compression;
                     uint length;
 
@@ -184,7 +185,7 @@ namespace StattyBot {
                         ReadBytes += stream.Read(ReadBuffer, ReadBytes, ReadBuffer.Length - ReadBytes);
 
                         if (ReadBytes == ReadBuffer.Length && ReadingHeader) {
-                            readType = BitConverter.ToUInt16(ReadBuffer, 0);
+                            readType = (BanchoPacket) BitConverter.ToUInt16(ReadBuffer, 0);
                             compression = ReadBuffer[2] == 1;
                             length = BitConverter.ToUInt32(ReadBuffer, 3);
 
@@ -197,7 +198,7 @@ namespace StattyBot {
                         BinaryReader reader = new BinaryReader(new MemoryStream(ReadBuffer));
 
                         switch (readType) {
-                            case 5:
+                            case BanchoPacket.LOGIN_REPLY:
                                 UserId = reader.ReadInt32();
                                 switch (UserId) {
                                     case -1:
@@ -221,7 +222,7 @@ namespace StattyBot {
                                         break;
                                 }
                                 break;
-                            case 7:
+                            case BanchoPacket.HANDLE_IRC_MESSAGE:
                                 string sender = ReadString(reader);
                                 string message = ReadString(reader);
                                 string target = ReadString(reader);
@@ -238,10 +239,10 @@ namespace StattyBot {
                                 OnMessage(sender, target, message);
 
                                 break;
-                            case 8:
+                            case BanchoPacket.PING:
                                 SendPong();
                                 break;
-                            case 12: // Bancho_HandleOsuUpdate
+                            case BanchoPacket.HANDLE_OSU_UPDATE:
                                 Player player = new Player();
                                 
                                 player.UserID = reader.ReadInt32();
@@ -272,12 +273,12 @@ namespace StattyBot {
 
                                 playerList.UpdatePlayer(player);
                                 break;
-                            case 13: // User quit
+                            case BanchoPacket.HANDLE_OSU_QUIT:
                                 int userId = reader.ReadInt32();
                                 playerList.RemovePlayer(userId);
                                 break;
-                            case 27: // Room updated
-                            case 28: // Room created
+                            case BanchoPacket.MATCH_UPDATE:
+                            case BanchoPacket.MATCH_NEW:
                                 MultiplayerRoom room = new MultiplayerRoom();
 
                                 room.MatchId = reader.ReadByte();
@@ -296,11 +297,11 @@ namespace StattyBot {
                                 
                                 lobby.UpdateRoom(room);
                                 break;
-                            case 29: // Room disbanded
+                            case BanchoPacket.MATCH_DISBAND:
                                 int matchId = reader.ReadInt32();
                                 lobby.RemoveRoom(matchId);
                                 break;
-                            case 68: // Channel joined
+                            case BanchoPacket.CHANNEL_AUTOJOIN:
                                 string channel = ReadString(reader);
                                 Console.WriteLine("Auto-joining " + channel);
                                 break;
@@ -356,10 +357,10 @@ namespace StattyBot {
         
         // Packets
 
-        public void SendPacketNoData(short id) {
+        public void SendPacketNoData(OsuPacket id) {
             using (MemoryStream ms = new MemoryStream()) {
                 using (BinaryWriter writer = new BinaryWriter(ms)) {
-                    writer.Write((short)3);
+                    writer.Write((short)id);
                     writer.Write((byte)0);
                     writer.Write(0);
                 }
@@ -384,7 +385,7 @@ namespace StattyBot {
 
             using (MemoryStream ms = new MemoryStream()) {
                 using (BinaryWriter writer = new BinaryWriter(ms)) {
-                    writer.Write((short)1);
+                    writer.Write((short)OsuPacket.SEND_IRC_MESSAGE);
                     writer.Write((byte)0);
                     writer.Write(ulebSenderName.Length + ulebTarget.Length + ulebMessage.Length);
 
@@ -404,7 +405,7 @@ namespace StattyBot {
             using (MemoryStream ms = new MemoryStream()) {
                 using (BinaryWriter writer = new BinaryWriter(ms)) {
                     // Packet header
-                    writer.Write((short)0);
+                    writer.Write((short)OsuPacket.SEND_USER_STATUS);
                     writer.Write((byte)0);
                     writer.Write(2 + ulebText.Length + ulebMapChecksum.Length);
                     // 2: StatusList byte & updateBeatmap bool
@@ -424,7 +425,7 @@ namespace StattyBot {
         }
 
         private void SendPong() {
-            SendPacketNoData(4);
+            SendPacketNoData(OsuPacket.PONG);
         }
 
         public void SendStatus(Status status) {
@@ -432,15 +433,15 @@ namespace StattyBot {
         }
 
         public void SendExit() {
-            SendPacketNoData(2);
+            SendPacketNoData(OsuPacket.EXIT);
         }
 
         public void JoinLobby() {
-            SendPacketNoData(31);
+            SendPacketNoData(OsuPacket.LOBBY_JOIN);
         }
         
         public void RequestPresence() {
-            SendPacketNoData(3);
+            SendPacketNoData(OsuPacket.REQUEST_STATUS_UPDATE);
         }
 
 
