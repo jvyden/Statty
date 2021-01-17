@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
+using System.Threading;
 using System.Threading.Tasks;
 using OppaiSharp;
 using BeatmapCalc = OppaiSharp.Beatmap;
@@ -9,8 +11,9 @@ namespace BeatmapProcessor {
     public class Processor {
         private SHA256 Sha256 = SHA256.Create();
         private DbHandler dbHandler = new DbHandler();
-        public async Task ParseOsuFiles(string[] files) {
+        public async Task ParseOsuFiles(string[] files, int threadId = 0) {
             int progress = 0;
+            List<StattyBeatmap> beatmaps = new List<StattyBeatmap>();
             foreach (string file in files) {
                 progress++;
                 StattyBeatmap beatmap = new StattyBeatmap();
@@ -32,8 +35,8 @@ namespace BeatmapProcessor {
 
                 beatmap.Name = $"{osuFile.Artist} - {osuFile.Title} [{osuFile.Version}]";
                 
-                Console.WriteLine($"({progress}/{files.Length}) Parsed {beatmap.Name} | {beatmap.StarRating}* | AR{beatmap.ApproachRate} | CS{beatmap.CircleSize} | OD{beatmap.OverallDifficulty} | HP{beatmap.HpDrainRate}");
-                dbHandler.AddBeatmap(beatmap);
+                Console.WriteLine($"(Thread {threadId}: {progress}/{files.Length}) Parsed {beatmap.Name} | {beatmap.StarRating}*");
+                DbHandler.BeatmapQueue.Add(beatmap);
             }
         }
 
