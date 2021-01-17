@@ -1,3 +1,5 @@
+using System;
+
 namespace StattyBot.util {
     public class Util {
         public static string GetPositive(int i) {
@@ -15,6 +17,10 @@ namespace StattyBot.util {
 
         public static string GetPositiveStr(long i) {
             return GetPositiveStr((int) i);
+        }
+        
+        public static long GetUnixTime() {
+            return ((DateTimeOffset)DateTime.UtcNow).ToUnixTimeSeconds();
         }
     }
 }

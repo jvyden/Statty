@@ -4,11 +4,11 @@ using System.Threading.Tasks;
 
 
 namespace StattyBot.util {
-    public class InfluxDBHandler {
+    public class InfluxDbHandler {
         private Environment environment = new Environment();
         private HttpClient client = new HttpClient();
 
-        public InfluxDBHandler() {
+        public InfluxDbHandler() {
             client.BaseAddress = new Uri($"http://{environment.InfluxHost}:{environment.InfluxPort}/");
             client.DefaultRequestHeaders.Accept.Clear();
         }

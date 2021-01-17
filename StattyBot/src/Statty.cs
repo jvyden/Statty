@@ -26,7 +26,7 @@ namespace StattyBot {
         private CommandHandler commandHandler;
         public ApiHandler ApiHandler;
         public DbHandler DbHandler;
-        private InfluxDBHandler influxDbHandler = new InfluxDBHandler();
+        private InfluxDbHandler influxDbHandler = new InfluxDbHandler();
         private Environment environment = new Environment();
 
         public List<Status> Statuses = new List<Status>{};

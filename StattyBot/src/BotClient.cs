@@ -106,7 +106,7 @@ namespace StattyBot {
                 #endif
                 writer.Flush();
 
-                LastPingTime = GetUnixTime.Now();
+                LastPingTime = Util.GetUnixTime();
             }
             catch {
                 Console.WriteLine("[*.*] Connection to Flandrecho Failed!");
@@ -115,7 +115,7 @@ namespace StattyBot {
         }
 
         private void FailConnection(int SecondsRetry) {
-            LastPingTime = GetUnixTime.Now();
+            LastPingTime = Util.GetUnixTime();
             PingTimeout = SecondsRetry;
 
             Disconnect();
@@ -162,7 +162,7 @@ namespace StattyBot {
             Connect();
 
             while (true) {
-                if(GetUnixTime.Now() - LastPingTime > PingTimeout) {
+                if(Util.GetUnixTime() - LastPingTime > PingTimeout) {
                     Connect();
                     Thread.Sleep(20);
                     continue;
@@ -180,7 +180,7 @@ namespace StattyBot {
 
                     while (Connected && stream != null && stream.DataAvailable) {
 
-                        LastPingTime = GetUnixTime.Now();
+                        LastPingTime = Util.GetUnixTime();
 
                         ReadBytes += stream.Read(ReadBuffer, ReadBytes, ReadBuffer.Length - ReadBytes);
 

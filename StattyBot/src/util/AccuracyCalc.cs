@@ -9,7 +9,7 @@ namespace StattyBot.util {
             return Math.Round((double)(count50 * 50 + count100 * 100 + count300 * 300) / (double)(GetHits(count50, count100, count300, countMiss) * 300),2);
         }
         public static double GetAccuracy100(int count50, int count100, int count300, int countMiss) {
-            return Math.Round(((double)(count50 * 50 + count100 * 100 + count300 * 300) / (double)(GetHits(count50, count100, count300, countMiss) * 300)) * 100.0, 2);
+            return Math.Round((GetAccuracy(count50, count100, count300, countMiss)) * 100.0, 2);
         }
 
     }

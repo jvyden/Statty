@@ -14,7 +14,7 @@ namespace StattyBot.util {
 
         public async Task<User> UserProfile(int id) {
             return await Task.Run(async () => {
-                var request = new HttpRequestMessage {
+                HttpRequestMessage request = new HttpRequestMessage {
                     RequestUri = new Uri(client.BaseAddress + "userProfile"),
                     Method = HttpMethod.Get,
                     Headers = {{ "userId", id.ToString() }}
@@ -33,7 +33,7 @@ namespace StattyBot.util {
             Console.WriteLine("Attempting to find ID of " + username);
             #endif
             return await Task.Run(async () => {
-                var request = new HttpRequestMessage {
+                HttpRequestMessage request = new HttpRequestMessage {
                     RequestUri = new Uri(client.BaseAddress + "userProfile"),
                     Method = HttpMethod.Get,
                     Headers = {{"username", username}}

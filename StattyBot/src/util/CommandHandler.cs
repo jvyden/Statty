@@ -32,7 +32,7 @@ namespace StattyBot.util {
             List<string> split = new List<string>(message.Substring(1).Split(' '));
             string args = "";
             try {
-                args = " " + String.Join(" ", split.GetRange(1, split.Count - 1)); // this is FUCKED
+                args = " " + String.Join(" ", split.GetRange(1, split.Count - 1)); // FIXME: i have no words other than this is FUCKED
             }
             catch {
                 // ignored
