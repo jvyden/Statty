@@ -10,7 +10,9 @@ namespace BeatmapProcessor {
         private SHA256 Sha256 = SHA256.Create();
         private DbHandler dbHandler = new DbHandler();
         public async Task ParseOsuFiles(string[] files) {
+            int progress = 0;
             foreach (string file in files) {
+                progress++;
                 StattyBeatmap beatmap = new StattyBeatmap();
                 beatmap.Hash = HashFile(file);
                 
@@ -20,7 +22,7 @@ namespace BeatmapProcessor {
                 BeatmapCalc osuFile = BeatmapCalc.Read(reader);
 
                 DiffCalc diff = new DiffCalc().Calc(osuFile);
-                beatmap.StarRating = (float) diff.Total;
+                beatmap.StarRating = (float) diff.Total; // no need for double precision, will be shortened to .##
                 beatmap.MaxCombo = osuFile.GetMaxCombo();
                 
                 beatmap.ApproachRate = osuFile.AR;
@@ -30,7 +32,7 @@ namespace BeatmapProcessor {
 
                 beatmap.Name = $"{osuFile.Artist} - {osuFile.Title} [{osuFile.Version}]";
                 
-                // Console.WriteLine($"{beatmap.Name} | {beatmap.StarRating}* | AR{beatmap.ApproachRate} | CS{beatmap.CircleSize} | OD{beatmap.OverallDifficulty} | HP{beatmap.HpDrainRate}");
+                Console.WriteLine($"({progress}/{files.Length}) Parsed {beatmap.Name} | {beatmap.StarRating}* | AR{beatmap.ApproachRate} | CS{beatmap.CircleSize} | OD{beatmap.OverallDifficulty} | HP{beatmap.HpDrainRate}");
                 dbHandler.AddBeatmap(beatmap);
             }
         }
