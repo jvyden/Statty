@@ -13,30 +13,35 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="System.Data.SQLite" Version="1.0.113.7" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.7" />
+    <PackageReference Include="WebSocketSharp" Version="1.0.3-rc11" />
   </ItemGroup>
   
   <PropertyGroup Condition="'$(Configuration)' == 'Staging'">
     <ConfigurationGroup>Release</ConfigurationGroup>
-    <DefineConstants>RELEASE;TRACE;FLAN2</DefineConstants>
+    <DefineConstants>RELEASE;TRACE;WEBSOCKET</DefineConstants>
     <StartupObject>StattyBot.Program</StartupObject>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <ConfigurationGroup>Release</ConfigurationGroup>
-    <DefineConstants>RELEASE;FLAN2</DefineConstants>
+    <DefineConstants>RELEASE</DefineConstants>
     <StartupObject>StattyBot.Program</StartupObject>
     <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <ConfigurationGroup>Debug</ConfigurationGroup>
-    <DefineConstants>TRACE;FLAN2</DefineConstants>
+    <DefineConstants>TRACE;WEBSOCKET</DefineConstants>
     <StartupObject>StattyBot.Program</StartupObject>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BeatmapProcessor\BeatmapProcessor.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="src\util\NetworkHandler.cs" />
   </ItemGroup>
 </Project>
